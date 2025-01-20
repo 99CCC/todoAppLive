@@ -22,6 +22,7 @@ Node - Runtime
 - [License](#license)
 
 ## Install
+Requires Node ( https://nodejs.org/en/download )
 ```
 cd api
 npm install
