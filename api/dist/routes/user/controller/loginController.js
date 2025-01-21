@@ -22,9 +22,11 @@ async function loginController(req, res) {
         const modelRes = await (0, loginModel_1.loginModel)(username, password);
         if (modelRes.checkFlag) {
             res.status(200).json(modelRes);
+            return;
         }
         else {
             res.status(400).json(modelRes);
+            return;
         }
     }
     catch (error) {

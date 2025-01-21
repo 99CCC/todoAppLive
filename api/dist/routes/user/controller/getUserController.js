@@ -15,14 +15,17 @@ async function getUserController(req, res) {
         const userId = req.user?.userId;
         if (userId != 0) {
             res.status(401).json({ message: "Unauthorized" });
+            return;
         }
         const username = req.body.username;
         const modelRes = await (0, getUserModel_js_1.getUserModel)(username);
         if (modelRes.checkFlag) {
             res.status(200).json({ modelRes });
+            return;
         }
         else {
             res.status(500).json({ modelRes });
+            return;
         }
     }
     catch (error) {

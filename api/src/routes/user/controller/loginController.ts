@@ -23,8 +23,10 @@ export async function loginController(req: Request, res: Response): Promise<void
 
         if (modelRes.checkFlag) {
             res.status(200).json(modelRes);
+            return;
         } else {
             res.status(400).json(modelRes);
+            return;
         }
     } catch (error: any) {
         const errorResponse = await errorHandler(error);

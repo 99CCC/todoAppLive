@@ -23,9 +23,11 @@ async function createUserController(req, res) {
         const modelRes = await (0, createUserModel_1.createUserModel)(username, password);
         if (modelRes.checkFlag) {
             res.status(200).json(modelRes);
+            return;
         }
         else {
             res.status(400).json(modelRes);
+            return;
         }
     }
     catch (error) {

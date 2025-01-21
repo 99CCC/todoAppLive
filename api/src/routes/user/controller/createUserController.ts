@@ -24,8 +24,10 @@ export async function createUserController(req: Request, res: Response): Promise
 
         if (modelRes.checkFlag) {
             res.status(200).json(modelRes);
+            return;
         } else {
             res.status(400).json(modelRes);
+            return;
         }
     } catch (error: any) {
         const errorResponse = await errorHandler(error);

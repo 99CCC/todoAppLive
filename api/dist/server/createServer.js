@@ -15,6 +15,7 @@ const authMiddleware_1 = require("../middleware/authMiddleware");
 /*--- Importing routes ---*/
 const privateUserRoute_1 = __importDefault(require("../routes/user/privateUserRoute"));
 const publicUserRoute_1 = __importDefault(require("../routes/user/publicUserRoute"));
+const todoRoute_1 = __importDefault(require("../routes/todo/todoRoute"));
 const dbServiceinitializer_1 = require("../services/dbServiceinitializer");
 let dbServiceInstance;
 (0, dbServiceinitializer_1.initializeDbService)()
@@ -45,8 +46,7 @@ function createServer() {
         res.status(404).json({ message: "Route not found" });
     });
     app.use(function (err, req, res, next) {
-        console.error(err);
-        res.status(err.status || 500).json({ message: "Internal Server Error", errorType: err.type, Error: err });
+        res.status(err.status || 500).json({ message: "Internal Server Error", errorType: err.type });
     });
     return app;
 }
@@ -57,6 +57,9 @@ function createServer() {
 function importRoutes(app) {
     /* --- Public Routes ---*/
     app.use(publicUserRoute_1.default);
+    /* --- Start Usage of Authentication --- */
+    app.use(authMiddleware_1.authMiddleware);
     /* --- Private Routes ---*/
-    app.use(authMiddleware_1.authMiddleware, privateUserRoute_1.default);
+    app.use(privateUserRoute_1.default);
+    app.use(todoRoute_1.default);
 }

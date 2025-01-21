@@ -15,6 +15,7 @@ try {
     const userId = req.user?.userId;
     if(userId != 0){
         res.status(401).json({message: "Unauthorized"});
+        return;
     }
 
     const username = req.body.username;
@@ -22,8 +23,10 @@ try {
 
     if(modelRes.checkFlag){
         res.status(200).json({modelRes});
+        return;
     }else{
         res.status(500).json({modelRes});
+        return;
     }
 
 } catch (error) {
