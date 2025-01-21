@@ -35,5 +35,14 @@ class dbService {
             throw error;
         }
     }
+    async detailedQueryMethod(query, params = []) {
+        try {
+            const dbRes = await this.connectionPool.query(query, params);
+            return dbRes;
+        }
+        catch (error) {
+            throw error;
+        }
+    }
 }
 exports.dbService = dbService;

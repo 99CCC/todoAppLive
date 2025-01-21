@@ -32,4 +32,12 @@ export class dbService {
         throw error;
     }}
 
+    public async detailedQueryMethod(query: string, params: any[] = []): Promise<pkg.QueryResult<any>>{
+        try{
+        const dbRes = await this.connectionPool.query(query, params);
+        return dbRes;
+    }catch(error: any){
+        throw error;
+    }}
+
 }

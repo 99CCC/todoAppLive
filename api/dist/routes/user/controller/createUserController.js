@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateLogin = void 0;
-exports.loginController = loginController;
+exports.validateCreateUser = void 0;
+exports.createUserController = createUserController;
 const express_validator_1 = require("express-validator");
 const validateRequest_1 = require("../../../middleware/validateRequest");
 const errorHandler_1 = require("../../../middleware/errorHandler");
-const loginModel_1 = require("../model/loginModel");
-exports.validateLogin = [
+const createUserModel_1 = require("../model/createUserModel");
+exports.validateCreateUser = [
     (0, express_validator_1.body)("username")
         .notEmpty()
         .withMessage("Field 'username' is required"),
@@ -15,11 +15,12 @@ exports.validateLogin = [
         .withMessage("Field 'password' is required"),
     validateRequest_1.validateRequest,
 ];
-async function loginController(req, res) {
+async function createUserController(req, res) {
     try {
+        console.log("controller reached");
         const username = req.body.username;
         const password = req.body.password;
-        const modelRes = await (0, loginModel_1.loginModel)(username, password);
+        const modelRes = await (0, createUserModel_1.createUserModel)(username, password);
         if (modelRes.checkFlag) {
             res.status(200).json(modelRes);
         }
