@@ -7,7 +7,7 @@ async function main(){
         const app = createServer();
         const port = process.env.ApiPort || 3001;
 
-        (await app).listen(port, () => {
+        app.listen(port, () => {
             console.log("Server started. Listening on port: ", port)
         });
 

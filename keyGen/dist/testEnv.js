@@ -35,18 +35,11 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
-const createServer_js_1 = require("./server/createServer.js");
-async function main() {
-    try {
-        const app = (0, createServer_js_1.createServer)();
-        const port = process.env.ApiPort || 3001;
-        app.listen(port, () => {
-            console.log("Server started. Listening on port: ", port);
-        });
-    }
-    catch (error) {
-        console.error('An error has occured', error);
-        process.exit;
-    }
+function testEnv() {
+    const x = process.env.TEST;
+    console.log("Node Proccess gives: ", x);
+    const y = process.env.TEST;
+    console.log("dotenv gives: ", y);
+    //GIVES UNDEFINED!
 }
-main();
+testEnv();

@@ -1,5 +1,7 @@
 import { dbServiceInstance } from "../../../server/createServer";
 import bcrypt from 'bcrypt';
+import jwt from "jsonwebtoken";
+
 
 export async function loginModel(username: string, password: string){
     try {
@@ -11,9 +13,14 @@ export async function loginModel(username: string, password: string){
         const isMatch = bcrypt.compareSync(password, validatedPassword);
 
         if(isMatch){
+            const token = jwt.sign(
+                {userId: dbRes[0].user_id}, 
+                process.env.JWT_SECRET as string, 
+                {expiresIn: '1 Days'}
+            );
             return {
                 checkFlag: true,
-                userId: dbRes[0].user_id
+                token: token
             }
         }else{
             return {
