@@ -1,3 +1,8 @@
+## 22.01.2025
+Set up deletion and made a proper getChild or parent endpoint
+Next on agenda:
+    -more Mod Endpoints
+
 ## 21.01.2025 23:31
 Set up authentication, decided to only use tokens against api and not encrypt/decrypt between server and frontend(password),
 as we can just use https/ssl. Hashing into database is also done. and again JWT is set up, storing the userId in the token as well (avoids users having to send username as param and me having to do a lookup for every query being ran).
