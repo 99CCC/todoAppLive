@@ -6,29 +6,28 @@ import { loadTodoModel } from "../model/loadTodoModel";
 
 export const validateLoadTodo: RequestHandler[] = [
     param("table")
-    .notEmpty()
-    .withMessage("param 'table' is required")
+        .notEmpty()
+        .withMessage("Param 'table' is required")
 ]
 
 export async function loadTodoController(req: AuthenticatedRequest, res: Response): Promise<void>{
     try {
+        const userId = req.user?.userId;
         const table = req.params.table;
-        const user = req.user?.userId;
-        console.log(user);
-        
-        if(user === undefined){
-            res.status(500).json({message: "User ID not found"});
+        if(userId === undefined){
+            res.status(401).json("Unauthorized/Possible missing credentials");
             return;
         }
+          const modelRes = await loadTodoModel(table, userId);
 
-        const modelRes = await loadTodoModel(user, table);
+          if(modelRes.checkFlag){
+            res.status(200).json(modelRes);
+            return;
+          }
+        
+          res.status(modelRes.status ?? 500).json(modelRes.message || "Internal server error");
+          return;
 
-        if(modelRes.checkFlag){
-            res.status(200).json({modelRes});
-        }else{
-            res.status(modelRes.status ?? 500).json({modelRes});
-        }
-        return;
     } catch (error) {
         const errorResponse = await errorHandler(error);
         res.status(errorResponse.status).json(errorResponse)

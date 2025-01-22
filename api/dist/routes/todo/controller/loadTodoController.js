@@ -8,24 +8,22 @@ const loadTodoModel_1 = require("../model/loadTodoModel");
 exports.validateLoadTodo = [
     (0, express_validator_1.param)("table")
         .notEmpty()
-        .withMessage("param 'table' is required")
+        .withMessage("Param 'table' is required")
 ];
 async function loadTodoController(req, res) {
     try {
+        const userId = req.user?.userId;
         const table = req.params.table;
-        const user = req.user?.userId;
-        console.log(user);
-        if (user === undefined) {
-            res.status(500).json({ message: "User ID not found" });
+        if (userId === undefined) {
+            res.status(401).json("Unauthorized/Possible missing credentials");
             return;
         }
-        const modelRes = await (0, loadTodoModel_1.loadTodoModel)(user, table);
+        const modelRes = await (0, loadTodoModel_1.loadTodoModel)(table, userId);
         if (modelRes.checkFlag) {
-            res.status(200).json({ modelRes });
+            res.status(200).json(modelRes);
+            return;
         }
-        else {
-            res.status(modelRes.status ?? 500).json({ modelRes });
-        }
+        res.status(modelRes.status ?? 500).json(modelRes.message || "Internal server error");
         return;
     }
     catch (error) {
