@@ -3,6 +3,7 @@ import { Router } from "express";
 import { loadTodoController, validateLoadTodo } from "./controller/loadTodoController";
 import { loadTodoChildController, validateLoadTodoChild } from "./controller/loadTodoChildController";
 import { deleteTodoController, validateDeleteTodo } from "./controller/deleteTodoController";
+import { updateTodoController, validateUpdateTodo } from "./controller/updateTodoController";
 
 
 const router = Router();
@@ -13,12 +14,10 @@ router.get('/loadTodo/:table', validateLoadTodo, loadTodoController); //POSSIBLE
 router.post('/loadTodoChild', validateLoadTodoChild, loadTodoChildController); 
 
 //Modifying Parent
-router.delete('/deleteTodo/:todoId/:table', validateDeleteTodo, deleteTodoController);
-router.put('/archiveTodo/:todoId')
-router.put('/updateTodo/:todoId')
+router.delete('/deleteTodo/:todoId/:table/:depth?', validateDeleteTodo, deleteTodoController);
+router.put('/updateTodo', validateUpdateTodo, updateTodoController);
 
-//Modifying Child
-router.delete('/deleteTodoChild');
-router.put('/updateTodoChild')
+//router.post('/createTodo')
+//router.put('/unArchive')
 
 export default router;

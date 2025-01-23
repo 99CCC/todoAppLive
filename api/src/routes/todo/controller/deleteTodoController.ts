@@ -1,6 +1,6 @@
 import { RequestHandler, Response } from "express";
 import { AuthenticatedRequest } from "../../../sharedInterface/AuthenticatedRequest";
-import { param } from "express-validator";
+import { body, param } from "express-validator";
 import { deleteTodoModel } from "../model/deleteTodoModel";
 import { errorHandler } from "../../../middleware/errorHandler";
 
@@ -14,12 +14,17 @@ export const validateDeleteTodo: RequestHandler[] = [
         .notEmpty()
         .withMessage("param 'table' is required")
         .isIn(["active", "archive"])
-        .withMessage("param 'table' must be in ['active', 'archive']")
-]
-
+        .withMessage("param 'table' must be in ['active', 'archive']"),
+    body("depth")
+        .optional()
+        .notEmpty()
+        .withMessage("param 'type' is required")
+];
+///deleteTodo/:todoId/:table/:type/:depth
 export async function deleteTodoController(req: AuthenticatedRequest, res: Response): Promise<void>{ 
     try {
         const userId = req.user?.userId;
+        console.log("test", userId);
         if(userId === undefined){
             res.status(401).json("Unauthorized/Possible missing credentials");
             return;
@@ -27,8 +32,9 @@ export async function deleteTodoController(req: AuthenticatedRequest, res: Respo
         
         const todoId = parseInt(req.params.todoId);
         const table = req.params.table;
+        const depth = req.body.depth;
 
-        const modelRes = await deleteTodoModel(userId, todoId, table);
+        const modelRes = await deleteTodoModel(userId, todoId, table, depth);
 
         if(modelRes.checkFlag){
             res.status(200).json(modelRes);

@@ -15,18 +15,25 @@ exports.validateDeleteTodo = [
         .notEmpty()
         .withMessage("param 'table' is required")
         .isIn(["active", "archive"])
-        .withMessage("param 'table' must be in ['active', 'archive']")
+        .withMessage("param 'table' must be in ['active', 'archive']"),
+    (0, express_validator_1.body)("depth")
+        .optional()
+        .notEmpty()
+        .withMessage("param 'type' is required")
 ];
+///deleteTodo/:todoId/:table/:type/:depth
 async function deleteTodoController(req, res) {
     try {
         const userId = req.user?.userId;
+        console.log("test", userId);
         if (userId === undefined) {
             res.status(401).json("Unauthorized/Possible missing credentials");
             return;
         }
         const todoId = parseInt(req.params.todoId);
         const table = req.params.table;
-        const modelRes = await (0, deleteTodoModel_1.deleteTodoModel)(userId, todoId, table);
+        const depth = req.body.depth;
+        const modelRes = await (0, deleteTodoModel_1.deleteTodoModel)(userId, todoId, table, depth);
         if (modelRes.checkFlag) {
             res.status(200).json(modelRes);
             return;
