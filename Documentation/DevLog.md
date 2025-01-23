@@ -1,3 +1,10 @@
+## 24.01.2025 00:29
+Set up deletion to include childs in same route, and made update for both as well (need to verify update on child)
+Next on agenda:
+    -Verify update child
+    -Create endpoint
+    -Movefromarchive endpoint
+
 ## 22.01.2025
 Set up deletion and made a proper getChild or parent endpoint
 Next on agenda:
