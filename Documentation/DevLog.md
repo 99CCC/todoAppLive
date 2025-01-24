@@ -1,3 +1,8 @@
+## 25.01.2024 00:24
+Fixed small issues in update route and made createRoute (fully tested)
+Next on agenda:
+    -Create moveFromArchive route
+
 ## 24.01.2025 00:29
 Set up deletion to include childs in same route, and made update for both as well (need to verify update on child)
 Next on agenda:
