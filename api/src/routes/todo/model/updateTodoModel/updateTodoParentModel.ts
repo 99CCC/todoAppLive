@@ -42,7 +42,7 @@ export async function updateTodoParentModel(
             return{
                 checkFlag: true,
                 status: 200,
-                message: dbRes
+                message: dbRes.rowCount
             }
         }
     } catch (error) {

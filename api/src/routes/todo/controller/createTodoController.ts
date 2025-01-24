@@ -1,20 +1,11 @@
-import { RequestHandler, Response } from "express";
+import { Response } from "express";
 import { AuthenticatedRequest } from "../../../sharedInterface/AuthenticatedRequest";
-import { body } from "express-validator";
 import { errorHandler } from "../../../middleware/errorHandler";
-import { updateTodoChildModel } from "../model/updateTodoModel/updateTodoChildModel";
-import { updateTodoParentModel } from "../model/updateTodoModel/updateTodoParentModel";
+import { createTodoChildModel } from "../model/createTodoModel/createTodoChildModel";
+import { createTodoParentModel } from "../model/createTodoModel/createTodoParentModel";
 
-export const validateUpdateTodo: RequestHandler[] = [
-    body("todoId")
-        .notEmpty()
-        .withMessage("field 'todoId' is required")
-]
-/*
-userId: number, todoId: number,
-title?: string,
-completed?: boolean*/
-export async function updateTodoController(req: AuthenticatedRequest, res: Response): Promise<void>{
+
+export async function createTodoController(req: AuthenticatedRequest, res: Response): Promise<void>{
     try{
 
         const userId = req.user?.userId;
@@ -23,14 +14,14 @@ export async function updateTodoController(req: AuthenticatedRequest, res: Respo
             return;
         }
 
-        if(req.body.depth){
+        if(req.body.todoId){
             const todoId: number = req.body.todoId;
             const depth: number[] = req.body.depth;
             const title: string = req.body.title;
             const body: string = req.body.body;
             const completed: boolean = req.body.completed;
             
-            const modelRes = await updateTodoChildModel(userId, todoId, depth, title, body, completed);
+            const modelRes = await createTodoChildModel(userId, todoId, depth, title, body, completed);
 
             if(modelRes.checkFlag){
                 res.status(200).json(modelRes);
@@ -40,11 +31,9 @@ export async function updateTodoController(req: AuthenticatedRequest, res: Respo
                 return
             }
         }else{
-            const todoId: number = req.body.todoId;
             const title: string = req.body.title;
-            const completed: boolean = req.body.completed;
             
-            const modelRes = await updateTodoParentModel(userId, todoId, title, completed);
+            const modelRes = await createTodoParentModel(userId, title);
 
             if(modelRes.checkFlag){
                 res.status(200).json(modelRes);
@@ -54,8 +43,6 @@ export async function updateTodoController(req: AuthenticatedRequest, res: Respo
                 return
             }
         }
-
-
 
     }catch(error){
                 const errorResponse = await errorHandler(error);

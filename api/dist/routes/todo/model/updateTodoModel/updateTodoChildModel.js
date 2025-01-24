@@ -5,21 +5,31 @@ const createServer_1 = require("../../../../server/createServer");
 async function updateTodoChildModel(userId, todoId, depth, title, body, completed) {
     try {
         const stringifiedArray = "ARRAY[" + depth.join(",") + "]::NUMERIC[]";
-        let params = [userId, todoId, stringifiedArray];
-        let query = "UPDATE todo.todo_children SET";
+        let params = [userId, todoId];
+        let query = `
+        WITH valid_todo AS (
+            SELECT todo_id FROM todo.todo_active WHERE todo_id = $2 AND user_id = $1 
+        )
+        UPDATE todo.todo_children SET`;
         if (title) {
-            query += ` title = ${"$" + params.length + 1},`;
+            const pLength = params.length + 1;
+            query += ` title = ${"$" + pLength}`;
+            if (completed !== undefined || body !== undefined) {
+                query += ",";
+            }
             params.push(title);
         }
         if (completed !== undefined) {
-            query += ` completed = ${"$" + params.length + 1}`;
+            const pLength = params.length + 1;
+            query += ` completed = ${"$" + pLength}`;
             params.push(completed);
             if (body) {
                 query += ",";
             }
         }
         if (body) {
-            query += ` body = ${"$" + params.length + 1}`;
+            const pLength = params.length + 1;
+            query += ` body = ${"$" + pLength}`;
             params.push(body);
         }
         if (title === undefined && completed === undefined && body === undefined) {
@@ -28,7 +38,7 @@ async function updateTodoChildModel(userId, todoId, depth, title, body, complete
                 message: "Invalid body passed: When typeof child field 'title' or 'completed' or 'body' is required"
             };
         }
-        query += " WHERE user_id = $1 AND todo_id = $2 AND depth = $3";
+        query += ` WHERE todo_id IN (SELECT todo_id FROM valid_todo) AND depth = ${stringifiedArray}`;
         const dbRes = await createServer_1.dbServiceInstance.detailedQueryMethod(query, params);
         if (dbRes.rowCount == 0) {
             return {
@@ -40,7 +50,7 @@ async function updateTodoChildModel(userId, todoId, depth, title, body, complete
             return {
                 checkFlag: true,
                 status: 200,
-                message: dbRes
+                message: dbRes.rowCount
             };
         }
     }

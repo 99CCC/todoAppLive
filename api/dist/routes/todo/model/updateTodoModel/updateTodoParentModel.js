@@ -37,7 +37,7 @@ async function updateTodoParentModel(userId, todoId, title, completed) {
             return {
                 checkFlag: true,
                 status: 200,
-                message: dbRes
+                message: dbRes.rowCount
             };
         }
     }

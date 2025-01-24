@@ -15,6 +15,7 @@ async function deleteTodoModel(userId, todoId, tableInput, depth) {
                 prefixGuard += ` AND "depth"[${j}] = ${depth[i]}`;
                 j++;
             }
+            ;
             const query = `WITH valid_todos AS (
                             SELECT todo_id FROM todo.todo_active WHERE user_id = $1 AND todo_id = $2
                             ),

@@ -6,17 +6,26 @@ export async function updateTodoChildModel(
     body?: string,      completed?: boolean) {
     try {
         const stringifiedArray = "ARRAY["+depth.join(",")+"]::NUMERIC[]";
-        let params: any[] = [userId, todoId, stringifiedArray];
+        let params: any[] = [userId, todoId];
 
-        let query = "UPDATE todo.todo_children SET"
-        
+        let query = `
+        WITH valid_todo AS (
+            SELECT todo_id FROM todo.todo_active WHERE todo_id = $2 AND user_id = $1 
+        )
+        UPDATE todo.todo_children SET`
+
         if(title){
-            query += ` title = ${"$"+params.length+1},`;
+            const pLength = params.length+1
+            query += ` title = ${"$"+pLength}`;
+            if(completed !== undefined || body !== undefined){
+                query += ","
+            }
             params.push(title);
         }
 
         if(completed !== undefined){
-            query += ` completed = ${"$"+params.length+1}`;
+            const pLength = params.length+1
+            query += ` completed = ${"$"+pLength}`;
             params.push(completed);
             if(body){
                 query += ",";
@@ -24,7 +33,8 @@ export async function updateTodoChildModel(
         }
 
         if(body){
-            query += ` body = ${"$"+params.length+1}`;
+            const pLength = params.length+1
+            query += ` body = ${"$"+pLength}`;
             params.push(body);
         }
 
@@ -35,7 +45,7 @@ export async function updateTodoChildModel(
             }
         }
 
-        query += " WHERE user_id = $1 AND todo_id = $2 AND depth = $3";
+        query += ` WHERE todo_id IN (SELECT todo_id FROM valid_todo) AND depth = ${stringifiedArray}`;
         
         const dbRes = await dbServiceInstance.detailedQueryMethod(query, params);
 
@@ -48,7 +58,7 @@ export async function updateTodoChildModel(
             return{
                 checkFlag: true,
                 status: 200,
-                message: dbRes
+                message: dbRes.rowCount
             }
         }
     } catch (error) {

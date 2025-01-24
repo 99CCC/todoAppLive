@@ -4,6 +4,7 @@ import { loadTodoController, validateLoadTodo } from "./controller/loadTodoContr
 import { loadTodoChildController, validateLoadTodoChild } from "./controller/loadTodoChildController";
 import { deleteTodoController, validateDeleteTodo } from "./controller/deleteTodoController";
 import { updateTodoController, validateUpdateTodo } from "./controller/updateTodoController";
+import { createTodoController } from "./controller/createTodoController";
 
 
 const router = Router();
@@ -17,7 +18,8 @@ router.post('/loadTodoChild', validateLoadTodoChild, loadTodoChildController);
 router.delete('/deleteTodo/:todoId/:table/:depth?', validateDeleteTodo, deleteTodoController);
 router.put('/updateTodo', validateUpdateTodo, updateTodoController);
 
-//router.post('/createTodo')
+//Creating parent | child
+router.post('/createTodo', createTodoController);
 //router.put('/unArchive')
 
 export default router;
