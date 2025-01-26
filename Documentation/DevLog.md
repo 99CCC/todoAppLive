@@ -1,3 +1,9 @@
+## 26.01.2024
+Set up the base for the frontend with load func. OK
+Next on agenda:
+    -Either refactor to allow children to hold subtasks
+    -Add in delete endpoints and save title endpoint
+
 ## 25.01.2024 00:24
 Fixed small issues in update route and made createRoute (fully tested)
 Next on agenda:
