@@ -2,6 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createTodoChildModel = createTodoChildModel;
 const createServer_1 = require("../../../../server/createServer");
+/**
+ * NEEDS A REFACTOR TO USE MAP (GOAL: LESS THAN 60 LINES)
+ * @param userId
+ * @param todoId
+ * @param depth
+ * @param title
+ * @param body
+ * @param completed
+ * @returns
+ */
 async function createTodoChildModel(userId, todoId, depth, title, body, completed) {
     try {
         if (depth !== undefined) {

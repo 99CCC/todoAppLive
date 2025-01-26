@@ -8,6 +8,8 @@ export const validateLoadTodo: RequestHandler[] = [
     param("table")
         .notEmpty()
         .withMessage("Param 'table' is required")
+        .isIn(["active", "archive"])
+        .withMessage("Param must be in ['active', archive']")
 ]
 
 export async function loadTodoController(req: AuthenticatedRequest, res: Response): Promise<void>{

@@ -9,6 +9,8 @@ exports.validateLoadTodo = [
     (0, express_validator_1.param)("table")
         .notEmpty()
         .withMessage("Param 'table' is required")
+        .isIn(["active", "archive"])
+        .withMessage("Param must be in ['active', archive']")
 ];
 async function loadTodoController(req, res) {
     try {

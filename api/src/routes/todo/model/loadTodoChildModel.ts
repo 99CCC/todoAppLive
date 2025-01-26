@@ -4,6 +4,8 @@ export async function loadTodoChildModel(todoId: number, type: string, depth: nu
     try{
     const queryTable = tableInput == "active" ? "todo_active" : tableInput == "archive" ? "todo_archive" : null;
     
+    if(depth === undefined){depth = []};
+
     let query = `SELECT ttc.completed, ttc.title, ttc.body, ttc.depth  
                 FROM todo.todo_children ttc
                 JOIN todo.${queryTable} ttp ON ttp.todo_id = ttc.todo_id

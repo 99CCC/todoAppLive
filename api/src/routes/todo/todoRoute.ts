@@ -5,6 +5,7 @@ import { loadTodoChildController, validateLoadTodoChild } from "./controller/loa
 import { deleteTodoController, validateDeleteTodo } from "./controller/deleteTodoController";
 import { updateTodoController, validateUpdateTodo } from "./controller/updateTodoController";
 import { createTodoController } from "./controller/createTodoController";
+import { restoreTodoController, validateRestoreTodo } from "./controller/restoreTodoController";
 
 
 const router = Router();
@@ -20,6 +21,6 @@ router.put('/updateTodo', validateUpdateTodo, updateTodoController);
 
 //Creating parent | child
 router.post('/createTodo', createTodoController);
-//router.put('/unArchive')
+router.put('/restoreTodo/:todoId', validateRestoreTodo, restoreTodoController)
 
 export default router;

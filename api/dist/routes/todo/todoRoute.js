@@ -7,6 +7,7 @@ const loadTodoChildController_1 = require("./controller/loadTodoChildController"
 const deleteTodoController_1 = require("./controller/deleteTodoController");
 const updateTodoController_1 = require("./controller/updateTodoController");
 const createTodoController_1 = require("./controller/createTodoController");
+const restoreTodoController_1 = require("./controller/restoreTodoController");
 const router = (0, express_1.Router)();
 //router.get('/loadTodo/:table', validateLoadTodo, loadTodoController); <-- USES OLD SQL QUERY NEEDS UPDATE
 router.get('/loadTodo/:table', loadTodoController_1.validateLoadTodo, loadTodoController_1.loadTodoController); //POSSIBLE: Add a sort tag per item, to have the user be able to sort them themselves
@@ -16,5 +17,5 @@ router.delete('/deleteTodo/:todoId/:table/:depth?', deleteTodoController_1.valid
 router.put('/updateTodo', updateTodoController_1.validateUpdateTodo, updateTodoController_1.updateTodoController);
 //Creating parent | child
 router.post('/createTodo', createTodoController_1.createTodoController);
-//router.put('/unArchive')
+router.put('/restoreTodo/:todoId', restoreTodoController_1.validateRestoreTodo, restoreTodoController_1.restoreTodoController);
 exports.default = router;
