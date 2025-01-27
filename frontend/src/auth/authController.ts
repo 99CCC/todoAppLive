@@ -9,7 +9,7 @@ export async function authController(username: string, password: string){
         }
 
         const res = await axios.post(url!,body);
-        
+        return res.data.token;
     } catch (error) {
         console.error(error);
     }

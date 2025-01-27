@@ -1,5 +1,6 @@
 import axios from "axios";
-import { authController } from "../../auth/authController";
+import { authService } from "../../auth/authService";
+
 
 export interface TodoItem {
     todo_id: number,
@@ -13,12 +14,17 @@ export interface TodoChild {
     body: string,
     depth: number[]
 }
-export async function loadTodo(userId: number){
+
+export async function createInstance(token: string) {
+    authService.setToken(token);
+}
+
+export async function loadTodo(){
     try{
-        const url = "http://localhost:3001/loadTodo/active"
-        const res = await axios.get(url, {headers: {Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjAsImlhdCI6MTczODAwMDk2NSwiZXhwIjoxNzM4MDg3MzY1fQ.87jmVoorMmAzyXkDLhWbVS7jmD1G3qfUtUWhYOUM0TU"}});
+        const token = authService.getToken();
+        const url = process.env.REACT_APP_LOAD_TODO_URL;
+        const res = await axios.get(url!, {headers: {Authorization: "Bearer "+token}});
         const resdata: TodoItem[] = res.data.data;
-        console.log(resdata);
         return resdata;
     }catch(error){
         console.error(error);
@@ -26,26 +32,33 @@ export async function loadTodo(userId: number){
     }
 }
 
-export async function loadTodoChild(userId: number, todoId: number, depth?: number[]){
+export async function loadTodoChild(todoId: number, depth?: number[]){
     try {
-        const url = "http://localhost:3001/loadTodoChild"
-        let body = {};
-        if(depth !== undefined){
-           body = {
-            todoId: todoId, type: "child", table: "active", depth: depth
-           } 
-        }else{
-            body = {
-                todoId: todoId, type: "parent", table: "active" 
-            }
-        }
-        console.log(body);
-       const res = await axios.post(url, body, {headers: {Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjAsImlhdCI6MTczODAwMDk2NSwiZXhwIjoxNzM4MDg3MzY1fQ.87jmVoorMmAzyXkDLhWbVS7jmD1G3qfUtUWhYOUM0TU"}});
+        const token = authService.getToken();
+        const url = process.env.REACT_APP_LOAD_TODO_CHILD_URL;
+        let body = depth !== undefined ?
+            {todoId, type: "child", table: "active", depth} :
+                {todoId, type: "parent", table: "active"};
+
+        const res = await axios.post(url!, body, {headers: {Authorization: "Bearer "+token}});
         const resData: TodoChild[] = res.data.dbRes;
-        console.log(res.data.dbRes);
         return resData;
 
     } catch (error) {
         throw error;
+    }
+}
+
+export async function saveTodoChild(depth: number[], todoId: number, body: string){
+    try {
+        const url = process.env.REACT_APP_UPDATE_TODO_URL;
+        const token = authService.getToken();
+        const jsonBody = {depth, todoId, body};
+        const res = await axios.put(url!,jsonBody, {headers:{Authorization: "Bearer "+token}})
+            return res.status === 200;
+
+    } catch (error) {
+        console.error(error);
+        return false;
     }
 }

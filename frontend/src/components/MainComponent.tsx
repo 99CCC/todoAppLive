@@ -1,35 +1,31 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Todo from "./Todo/Todo";
+import { authController } from "../auth/authController";
 
 function MainComponent() {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [token, setToken] = useState<string>("");
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (canvas) {
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        ctx.fillStyle = "white"; // Set the background color
-        ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill the canvas
-      }
+    async function fetchToken() {
+      const username = "admin";
+      const password = "admin";
+      const fetchedToken = await authController(username, password);
+      setToken(fetchedToken || "");
     }
-  }, []);
+
+    fetchToken();
+  }, []); 
 
   return (
-    <>
-      <canvas
-        ref={canvasRef}
-        width={1920}
-        height={1080}
-        style={{ position: "absolute", top: 0, left: 0, zIndex: -1 }}
-      />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Todo userId={0} userName={"Admin"} />} />
-        </Routes>
-      </BrowserRouter>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={token ? <Todo userId={0} userName={"Admin"} token={token} /> : <p>Loading...</p>}
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

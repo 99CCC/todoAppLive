@@ -1,29 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { loadTodo, TodoItem } from "./ApiController";
+import { createInstance, loadTodo, TodoItem } from "./ApiController";
 import TodoChildComp from "./containers/TodoChild";
 import TodoParent from "./containers/TodoParent";
+import { authController } from "../../auth/authController";
+import { authService } from "../../auth/authService";
+
 
 interface TodoProps {
     userId: number;
     userName: string;
+    token: string;
 }
 
-const Todo: React.FC<TodoProps> = ({ userId, userName }) => {
+const Todo: React.FC<TodoProps> = ({ userId, userName, token }) => {
+   // const [auth, setAuth] = useState(authService.getInstance(token).token);
     const [todos, setTodos] = useState<TodoItem[]>([]);
-
+    
     useEffect(() => {
-        const fetchTodos = async () => {
-            try {
-                const todoRes = await loadTodo(userId);
-                if (todoRes !== null) {
-                    setTodos(todoRes);
+        createInstance(token).then(() => {
+            const fetchTodos = async () => {
+                try {
+                    const todoRes = await loadTodo();
+                    if (todoRes !== null) {
+                        setTodos(todoRes);
+                    }
+                } catch (error) {
+                    console.error("Failed to load todos:", error);
                 }
-            } catch (error) {
-                console.error("Failed to load todos:", error);
             }
-        };
-
         fetchTodos();
+        })
+
     }, [userId]);
 
     return (

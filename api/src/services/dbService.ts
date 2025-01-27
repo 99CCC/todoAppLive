@@ -36,7 +36,6 @@ export class dbService {
 
     public async detailedQueryMethod(query: string, params: any[] = []): Promise<pkg.QueryResult<any>>{
         try{
-            console.log("query: ", query,"\n", "params: ", params);
         const dbRes = await this.connectionPool.query(query, params);
         return dbRes;
     }catch(error: any){

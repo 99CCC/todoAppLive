@@ -1,3 +1,13 @@
+## 27.01.2025 23:04
+We set up tokens on frontend(singleton auth service), set up env, save button on node-body
+Next on agenda:
+    -Refactor to allow children to hold subtasks (start this one tomorrow please)
+        -New table: "node" <--simple bars with a toggle function, the actual tasks of a taskComponent
+    -Add in editable titles & bodies (after refac)
+    -Figure out the delete button (want a drop end, and choose between archive and delete)
+    -Context Switch (Active <--> Archive)
+    -Add in a progress bar (just make a statistics endpoint to fetch x of y completed)
+
 ## 26.01.2024
 Set up the base for the frontend with load func. OK
 Next on agenda:

@@ -25,7 +25,7 @@ const TodoParent: React.FC<TodoParentProps> = ({ todo_id, todo_title }) => {
         }
 
         try {
-            const childrenRes = await loadTodoChild(0, todo_id);
+            const childrenRes = await loadTodoChild(todo_id);
             if (childrenRes && childrenRes.length > 0) {
                 setChildren(childrenRes);
             }
