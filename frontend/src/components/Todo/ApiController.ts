@@ -1,4 +1,5 @@
 import axios from "axios";
+import { authController } from "../../auth/authController";
 
 export interface TodoItem {
     todo_id: number,
@@ -12,11 +13,10 @@ export interface TodoChild {
     body: string,
     depth: number[]
 }
-
 export async function loadTodo(userId: number){
     try{
         const url = "http://localhost:3001/loadTodo/active"
-        const res = await axios.get(url, {headers: {Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjAsImlhdCI6MTczNzkwNDA0OSwiZXhwIjoxNzM3OTkwNDQ5fQ.S2cFjE03IkQbNGXvp0w-4_HEqusyE7jjXSfOVxL0zWw"}});
+        const res = await axios.get(url, {headers: {Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjAsImlhdCI6MTczODAwMDk2NSwiZXhwIjoxNzM4MDg3MzY1fQ.87jmVoorMmAzyXkDLhWbVS7jmD1G3qfUtUWhYOUM0TU"}});
         const resdata: TodoItem[] = res.data.data;
         console.log(resdata);
         return resdata;
@@ -40,7 +40,7 @@ export async function loadTodoChild(userId: number, todoId: number, depth?: numb
             }
         }
         console.log(body);
-       const res = await axios.post(url, body, {headers: {Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjAsImlhdCI6MTczNzkwNDA0OSwiZXhwIjoxNzM3OTkwNDQ5fQ.S2cFjE03IkQbNGXvp0w-4_HEqusyE7jjXSfOVxL0zWw"}});
+       const res = await axios.post(url, body, {headers: {Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjAsImlhdCI6MTczODAwMDk2NSwiZXhwIjoxNzM4MDg3MzY1fQ.87jmVoorMmAzyXkDLhWbVS7jmD1G3qfUtUWhYOUM0TU"}});
         const resData: TodoChild[] = res.data.dbRes;
         console.log(res.data.dbRes);
         return resData;

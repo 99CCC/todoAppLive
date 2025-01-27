@@ -12,3 +12,6 @@
 ## More nesting perhaps?
 - Proposal would be to refactor the todo_childrens body column to an array of grandchildren id's 
 ![alt text](./MoreNestinPerhaps.png)
+
+## Prod/Dev
+ - use: process.env.NODE_ENV to figure out if were running a test build or prod build and based on that use different urls?
