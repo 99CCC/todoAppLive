@@ -1,3 +1,19 @@
+## 28.01.2025 23:16
+Started node/grandchildren addition and refactor:
+    -Create Node OK
+-Delete Node -still need onlydelete node
+-Update Node  
+
+-Add in on Delete child < delete nodes OK
+-Add in on get child < fetch nodes aswell OK
+
+-Split the save into two:
+	-editing title auto saves when clicked out
+	-body: separate api call
+		-(Only call needed onClose())
+
+Next on Agenda: FINNISH updateNodeModel!!! 
+
 ## 27.01.2025 23:04
 We set up tokens on frontend(singleton auth service), set up env, save button on node-body
 Next on agenda:
