@@ -3,11 +3,13 @@ import { AuthenticatedRequest } from "../../../sharedInterface/AuthenticatedRequ
 import { errorHandler } from "../../../middleware/errorHandler";
 import { param } from "express-validator";
 import { loadTodoModelTree } from "../model/loadTodoTreeModel";
+import { validateRequest } from "../../../middleware/validateRequest";
 
 export const validateLoadTodoTree: RequestHandler[] = [
     param("table")
     .notEmpty()
-    .withMessage("param 'table' is required")
+    .withMessage("param 'table' is required"),
+    validateRequest
 ]
 
 export async function loadTodoTreeController(req: AuthenticatedRequest, res: Response): Promise<void>{

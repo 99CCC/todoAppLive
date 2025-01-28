@@ -15,9 +15,8 @@ async function createTodoController(req, res) {
             const todoId = req.body.todoId;
             const depth = req.body.depth;
             const title = req.body.title;
-            const body = req.body.body;
             const completed = req.body.completed;
-            const modelRes = await (0, createTodoChildModel_1.createTodoChildModel)(userId, todoId, depth, title, body, completed);
+            const modelRes = await (0, createTodoChildModel_1.createTodoChildModel)(userId, todoId, depth, title, completed);
             if (modelRes.checkFlag) {
                 res.status(200).json(modelRes);
                 return;

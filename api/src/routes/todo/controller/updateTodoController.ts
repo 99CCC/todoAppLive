@@ -4,11 +4,13 @@ import { body } from "express-validator";
 import { errorHandler } from "../../../middleware/errorHandler";
 import { updateTodoChildModel } from "../model/updateTodoModel/updateTodoChildModel";
 import { updateTodoParentModel } from "../model/updateTodoModel/updateTodoParentModel";
+import { validateRequest } from "../../../middleware/validateRequest";
 
 export const validateUpdateTodo: RequestHandler[] = [
     body("todoId")
         .notEmpty()
-        .withMessage("field 'todoId' is required")
+        .withMessage("field 'todoId' is required"),
+        validateRequest
 ]
 /*
 userId: number, todoId: number,

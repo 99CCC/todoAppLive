@@ -3,11 +3,13 @@ import { AuthenticatedRequest } from "../../../sharedInterface/AuthenticatedRequ
 import { Request, RequestHandler, Response } from 'express';
 import { getUserModel } from "../model/getUserModel.js";
 import { errorHandler } from "../../../middleware/errorHandler.js";
+import { validateRequest } from "../../../middleware/validateRequest.js";
 
 export const validateGetUser: RequestHandler[] = [
     body("username")
         .isEmpty()
-        .withMessage("field 'username' is required")
+        .withMessage("field 'username' is required"),
+        validateRequest
 ]
 
 export async function getUserController(req: AuthenticatedRequest, res: Response):Promise<void>{

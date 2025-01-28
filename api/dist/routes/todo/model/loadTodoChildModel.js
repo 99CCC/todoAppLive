@@ -9,10 +9,11 @@ async function loadTodoChildModel(todoId, type, depth, tableInput, userId) {
             depth = [];
         }
         ;
-        let query = `SELECT ttc.completed, ttc.title, ttc.body, ttc.depth  
+        let query = `SELECT ttc.completed AS child_completed, ttc.title AS child_title, ttc.depth AS child_depth, tn.*   
                 FROM todo.todo_children ttc
                 JOIN todo.${queryTable} ttp ON ttp.todo_id = ttc.todo_id
-                WHERE array_length("depth", 1) = $1 
+                JOIN todo.node tn ON tn.node_id = ANY(ttc.body)
+                WHERE array_length(ttc."depth", 1) = $1 
                 AND ttc.todo_id = $2 `;
         let length = depth.length > 0 ? depth.length + 1 : 1;
         let params = [length, todoId];

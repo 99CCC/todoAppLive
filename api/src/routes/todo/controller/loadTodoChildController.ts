@@ -3,6 +3,7 @@ import { AuthenticatedRequest } from "../../../sharedInterface/AuthenticatedRequ
 import { body } from "express-validator";
 import { errorHandler } from "../../../middleware/errorHandler";
 import { loadTodoChildModel } from "../model/loadTodoChildModel";
+import { validateRequest } from "../../../middleware/validateRequest";
 
 export const validateLoadTodoChild: RequestHandler[] = [
     body("todoId")
@@ -25,7 +26,8 @@ export const validateLoadTodoChild: RequestHandler[] = [
         .notEmpty()
         .withMessage("field 'tableInput' is required")
         .isIn(["active", "archive"])
-        .withMessage("field 'table' must be part of ['active', 'archive']")
+        .withMessage("field 'table' must be part of ['active', 'archive']"),
+        validateRequest
 ]
 
 //todoId: number, type: string, depth: number[], tableInput: string, userId: number

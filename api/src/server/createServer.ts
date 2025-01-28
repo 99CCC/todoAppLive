@@ -11,6 +11,7 @@ import { authMiddleware } from '../middleware/authMiddleware';
 import privateUserRoute from "../routes/user/privateUserRoute";
 import publicUserRoute from "../routes/user/publicUserRoute";
 import todoRoute from "../routes/todo/todoRoute";
+import nodeRoute from "../routes/node/nodeRoute";
 
 /*--- Service Imports ---*/
 import { dbService } from '../services/dbService';
@@ -72,5 +73,6 @@ function importRoutes(app: Express) {
 
     /* --- Private Routes ---*/
     app.use(privateUserRoute);
-    app.use(todoRoute)
+    app.use(todoRoute);
+    app.use(nodeRoute);
 }

@@ -3,13 +3,15 @@ import { AuthenticatedRequest } from "../../../sharedInterface/AuthenticatedRequ
 import { errorHandler } from "../../../middleware/errorHandler";
 import { param } from "express-validator";
 import { loadTodoModel } from "../model/loadTodoModel";
+import { validateRequest } from "../../../middleware/validateRequest";
 
 export const validateLoadTodo: RequestHandler[] = [
     param("table")
         .notEmpty()
         .withMessage("Param 'table' is required")
         .isIn(["active", "archive"])
-        .withMessage("Param must be in ['active', archive']")
+        .withMessage("Param must be in ['active', archive']"),
+        validateRequest
 ]
 
 export async function loadTodoController(req: AuthenticatedRequest, res: Response): Promise<void>{

@@ -5,6 +5,7 @@ import { createTodoChildModel } from "../model/createTodoModel/createTodoChildMo
 import { createTodoParentModel } from "../model/createTodoModel/createTodoParentModel";
 
 
+
 export async function createTodoController(req: AuthenticatedRequest, res: Response): Promise<void>{
     try{
 
@@ -18,10 +19,9 @@ export async function createTodoController(req: AuthenticatedRequest, res: Respo
             const todoId: number = req.body.todoId;
             const depth: number[] = req.body.depth;
             const title: string = req.body.title;
-            const body: string = req.body.body;
             const completed: boolean = req.body.completed;
             
-            const modelRes = await createTodoChildModel(userId, todoId, depth, title, body, completed);
+            const modelRes = await createTodoChildModel(userId, todoId, depth, title, completed);
 
             if(modelRes.checkFlag){
                 res.status(200).json(modelRes);

@@ -1,4 +1,6 @@
 import { dbServiceInstance } from "../../../../server/createServer";
+import { node } from "../../../../sharedInterface/nodeInterface";
+
 /**
  * NEEDS A REFACTOR TO USE MAP (GOAL: LESS THAN 60 LINES)
  * @param userId 
@@ -12,7 +14,7 @@ import { dbServiceInstance } from "../../../../server/createServer";
 export async function createTodoChildModel(
     userId: number, todoId: number,
     depth: number[], title?: string,
-    body?: string, completed?: boolean) {
+    completed?: boolean) {
     try {
         if (depth !== undefined) {
 
@@ -67,11 +69,6 @@ export async function createTodoChildModel(
 
             }
 
-            if (body) {
-                insertQuery += `, body`;
-                insertParams.push(body);
-                insertValues += `, $${insertParams.length}`
-            }
 
             if (completed !== undefined) {
                 insertQuery += `, completed`;
@@ -118,11 +115,6 @@ export async function createTodoChildModel(
                 insertValues += `, $${insertParams.length}`
             }
 
-            if (body) {
-                insertQuery += `, body`;
-                insertParams.push(body);
-                insertValues += `, $${insertParams.length}`
-            }
 
             if (completed !== undefined) {
                 insertQuery += `, completed`;

@@ -12,7 +12,7 @@ const createServer_1 = require("../../../../server/createServer");
  * @param completed
  * @returns
  */
-async function createTodoChildModel(userId, todoId, depth, title, body, completed) {
+async function createTodoChildModel(userId, todoId, depth, title, completed) {
     try {
         if (depth !== undefined) {
             const length = depth.length | 0;
@@ -63,11 +63,6 @@ async function createTodoChildModel(userId, todoId, depth, title, body, complete
                 insertParams.push(title);
                 insertValues += `, $${insertParams.length}`;
             }
-            if (body) {
-                insertQuery += `, body`;
-                insertParams.push(body);
-                insertValues += `, $${insertParams.length}`;
-            }
             if (completed !== undefined) {
                 insertQuery += `, completed`;
                 insertParams.push(completed);
@@ -108,11 +103,6 @@ async function createTodoChildModel(userId, todoId, depth, title, body, complete
             if (title) {
                 insertQuery += `, title`;
                 insertParams.push(title);
-                insertValues += `, $${insertParams.length}`;
-            }
-            if (body) {
-                insertQuery += `, body`;
-                insertParams.push(body);
                 insertValues += `, $${insertParams.length}`;
             }
             if (completed !== undefined) {

@@ -16,6 +16,7 @@ const authMiddleware_1 = require("../middleware/authMiddleware");
 const privateUserRoute_1 = __importDefault(require("../routes/user/privateUserRoute"));
 const publicUserRoute_1 = __importDefault(require("../routes/user/publicUserRoute"));
 const todoRoute_1 = __importDefault(require("../routes/todo/todoRoute"));
+const nodeRoute_1 = __importDefault(require("../routes/node/nodeRoute"));
 const dbServiceinitializer_1 = require("../services/dbServiceinitializer");
 let dbServiceInstance;
 (0, dbServiceinitializer_1.initializeDbService)()
@@ -62,4 +63,5 @@ function importRoutes(app) {
     /* --- Private Routes ---*/
     app.use(privateUserRoute_1.default);
     app.use(todoRoute_1.default);
+    app.use(nodeRoute_1.default);
 }

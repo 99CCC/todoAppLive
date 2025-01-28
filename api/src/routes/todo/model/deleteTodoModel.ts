@@ -8,14 +8,20 @@ export async function deleteTodoModel(userId: number, todoId: number, tableInput
             const lastDigit = depth[length - 1];
             const stringifiedArray = "ARRAY["+depth.join(",")+"]::NUMERIC[]";
             let prefixGuard = "";
+            let nodeCollector: any[] = [];
             let j = 1;
             for (let i = 0; i<depth.length; i++){
                 prefixGuard += ` AND "depth"[${j}] = ${depth[i]}`;
-                j++
-            }; 
+                nodeCollector.push(depth[i]);
+                j++;
+            };            
 
             const query = `WITH valid_todos AS (
                             SELECT todo_id FROM todo.todo_active WHERE user_id = $1 AND todo_id = $2
+                            ),
+                            off_bodies AS (
+                                DELETE FROM todo.node
+                                WHERE node_id IN (${nodeCollector.join(', ')})
                             ),
                             off_children AS (
                                 DELETE FROM todo.todo_children
@@ -23,7 +29,7 @@ export async function deleteTodoModel(userId: number, todoId: number, tableInput
                                 AND cardinality("depth")  > $3
                                 ${prefixGuard}
                                 RETURNING *
-                            )
+                            )  
                             DELETE FROM todo.todo_children
                             WHERE "depth" = ${stringifiedArray} AND todo_id IN (SELECT todo_id FROM valid_todos)
                             RETURNING *;`;
@@ -54,6 +60,13 @@ export async function deleteTodoModel(userId: number, todoId: number, tableInput
         const query = `WITH valid_todos AS (
                             SELECT todo_id FROM todo.${queryTable} WHERE user_id = $1 AND todo_id = $2
                         ),
+                        body_selector AS (
+                            SELECT body FROM todo.todo_children WHERE todo_id IN (SELECT todo_id FROM valid_todos)
+                        ),
+                            off_bodies AS (
+                                DELETE FROM todo.node
+								WHERE node_id IN (SELECT unnest(body) FROM body_selector)
+                            ),                        
                         deleted_children AS (
                             DELETE FROM todo.todo_children
                             WHERE todo_id IN (SELECT todo_id FROM valid_todos)

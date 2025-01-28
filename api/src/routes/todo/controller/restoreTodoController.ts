@@ -3,11 +3,13 @@ import { AuthenticatedRequest } from "../../../sharedInterface/AuthenticatedRequ
 import { param } from "express-validator";
 import { errorHandler } from "../../../middleware/errorHandler";
 import { restoreTodoModel } from "../model/restoreTodoModel";
+import { validateRequest } from "../../../middleware/validateRequest";
 
 export const validateRestoreTodo: RequestHandler[] = [
     param("todoId")
         .notEmpty()
-        .withMessage("param 'todoId' is required")
+        .withMessage("param 'todoId' is required"),
+        validateRequest
 ]
 
 export async function restoreTodoController(req: AuthenticatedRequest, res: Response): Promise<void>{

@@ -3,6 +3,7 @@ import { AuthenticatedRequest } from "../../../sharedInterface/AuthenticatedRequ
 import { body, param } from "express-validator";
 import { deleteTodoModel } from "../model/deleteTodoModel";
 import { errorHandler } from "../../../middleware/errorHandler";
+import { validateRequest } from "../../../middleware/validateRequest";
 
 export const validateDeleteTodo: RequestHandler[] = [
     param("todoId")
@@ -18,7 +19,8 @@ export const validateDeleteTodo: RequestHandler[] = [
     body("depth")
         .optional()
         .notEmpty()
-        .withMessage("param 'type' is required")
+        .withMessage("param 'type' is required"),
+        validateRequest
 ];
 ///deleteTodo/:todoId/:table/:type/:depth
 export async function deleteTodoController(req: AuthenticatedRequest, res: Response): Promise<void>{ 
