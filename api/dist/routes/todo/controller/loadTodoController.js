@@ -5,12 +5,14 @@ exports.loadTodoController = loadTodoController;
 const errorHandler_1 = require("../../../middleware/errorHandler");
 const express_validator_1 = require("express-validator");
 const loadTodoModel_1 = require("../model/loadTodoModel");
+const validateRequest_1 = require("../../../middleware/validateRequest");
 exports.validateLoadTodo = [
     (0, express_validator_1.param)("table")
         .notEmpty()
         .withMessage("Param 'table' is required")
         .isIn(["active", "archive"])
-        .withMessage("Param must be in ['active', archive']")
+        .withMessage("Param must be in ['active', archive']"),
+    validateRequest_1.validateRequest
 ];
 async function loadTodoController(req, res) {
     try {

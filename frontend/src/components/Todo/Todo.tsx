@@ -39,7 +39,6 @@ const Todo: React.FC<TodoProps> = ({ userId, userName, token }) => {
             <div className="list-group">
                 {todos.map((todo) => (
                     <TodoParent key={todo.todo_id} todo_id={todo.todo_id} todo_title={todo.title} />
-                    //<TodoChildComp key={todo.todo_id} todo={todo} depth={[todo.todo_id]} />
                 ))}
             </div>
         </div>

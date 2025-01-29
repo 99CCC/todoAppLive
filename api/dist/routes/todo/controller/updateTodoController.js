@@ -6,10 +6,12 @@ const express_validator_1 = require("express-validator");
 const errorHandler_1 = require("../../../middleware/errorHandler");
 const updateTodoChildModel_1 = require("../model/updateTodoModel/updateTodoChildModel");
 const updateTodoParentModel_1 = require("../model/updateTodoModel/updateTodoParentModel");
+const validateRequest_1 = require("../../../middleware/validateRequest");
 exports.validateUpdateTodo = [
     (0, express_validator_1.body)("todoId")
         .notEmpty()
-        .withMessage("field 'todoId' is required")
+        .withMessage("field 'todoId' is required"),
+    validateRequest_1.validateRequest
 ];
 /*
 userId: number, todoId: number,

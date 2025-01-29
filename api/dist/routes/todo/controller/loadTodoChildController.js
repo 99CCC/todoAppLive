@@ -5,6 +5,7 @@ exports.loadTodoChildController = loadTodoChildController;
 const express_validator_1 = require("express-validator");
 const errorHandler_1 = require("../../../middleware/errorHandler");
 const loadTodoChildModel_1 = require("../model/loadTodoChildModel");
+const validateRequest_1 = require("../../../middleware/validateRequest");
 exports.validateLoadTodoChild = [
     (0, express_validator_1.body)("todoId")
         .notEmpty()
@@ -26,7 +27,8 @@ exports.validateLoadTodoChild = [
         .notEmpty()
         .withMessage("field 'tableInput' is required")
         .isIn(["active", "archive"])
-        .withMessage("field 'table' must be part of ['active', 'archive']")
+        .withMessage("field 'table' must be part of ['active', 'archive']"),
+    validateRequest_1.validateRequest
 ];
 //todoId: number, type: string, depth: number[], tableInput: string, userId: number
 async function loadTodoChildController(req, res) {

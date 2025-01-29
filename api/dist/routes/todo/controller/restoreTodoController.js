@@ -5,10 +5,12 @@ exports.restoreTodoController = restoreTodoController;
 const express_validator_1 = require("express-validator");
 const errorHandler_1 = require("../../../middleware/errorHandler");
 const restoreTodoModel_1 = require("../model/restoreTodoModel");
+const validateRequest_1 = require("../../../middleware/validateRequest");
 exports.validateRestoreTodo = [
     (0, express_validator_1.param)("todoId")
         .notEmpty()
-        .withMessage("param 'todoId' is required")
+        .withMessage("param 'todoId' is required"),
+    validateRequest_1.validateRequest
 ];
 async function restoreTodoController(req, res) {
     try {

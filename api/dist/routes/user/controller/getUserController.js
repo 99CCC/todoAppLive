@@ -5,10 +5,12 @@ exports.getUserController = getUserController;
 const express_validator_1 = require("express-validator");
 const getUserModel_js_1 = require("../model/getUserModel.js");
 const errorHandler_js_1 = require("../../../middleware/errorHandler.js");
+const validateRequest_js_1 = require("../../../middleware/validateRequest.js");
 exports.validateGetUser = [
     (0, express_validator_1.body)("username")
         .isEmpty()
-        .withMessage("field 'username' is required")
+        .withMessage("field 'username' is required"),
+    validateRequest_js_1.validateRequest
 ];
 async function getUserController(req, res) {
     try {

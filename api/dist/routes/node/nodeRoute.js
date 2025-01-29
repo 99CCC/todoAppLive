@@ -2,8 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const createNodeController_1 = require("./controller/createNodeController");
+const updateNodeController_1 = require("./controller/updateNodeController");
+const deleteNodeController_1 = require("./controller/deleteNodeController");
 //import { loadTodoTreeController, validateLoadTodoTree } from "./controller/loadTodoTreeController";
 const router = (0, express_1.Router)();
 //router.get('/loadTodo/:table', validateLoadTodo, loadTodoController); 
 router.post('/createNode', createNodeController_1.validateCreateNode, createNodeController_1.createNodeController);
+router.put('/updateNode/:nodeId', updateNodeController_1.validateUpdateNode, updateNodeController_1.updateNodeController);
+router.delete('/deleteNode/:nodeId', deleteNodeController_1.validateDeleteNode, deleteNodeController_1.deleteNodeController);
 exports.default = router;

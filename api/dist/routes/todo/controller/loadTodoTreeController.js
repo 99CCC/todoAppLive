@@ -5,10 +5,12 @@ exports.loadTodoTreeController = loadTodoTreeController;
 const errorHandler_1 = require("../../../middleware/errorHandler");
 const express_validator_1 = require("express-validator");
 const loadTodoTreeModel_1 = require("../model/loadTodoTreeModel");
+const validateRequest_1 = require("../../../middleware/validateRequest");
 exports.validateLoadTodoTree = [
     (0, express_validator_1.param)("table")
         .notEmpty()
-        .withMessage("param 'table' is required")
+        .withMessage("param 'table' is required"),
+    validateRequest_1.validateRequest
 ];
 async function loadTodoTreeController(req, res) {
     try {

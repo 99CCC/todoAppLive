@@ -5,6 +5,7 @@ exports.deleteTodoController = deleteTodoController;
 const express_validator_1 = require("express-validator");
 const deleteTodoModel_1 = require("../model/deleteTodoModel");
 const errorHandler_1 = require("../../../middleware/errorHandler");
+const validateRequest_1 = require("../../../middleware/validateRequest");
 exports.validateDeleteTodo = [
     (0, express_validator_1.param)("todoId")
         .notEmpty()
@@ -19,7 +20,8 @@ exports.validateDeleteTodo = [
     (0, express_validator_1.body)("depth")
         .optional()
         .notEmpty()
-        .withMessage("param 'type' is required")
+        .withMessage("param 'type' is required"),
+    validateRequest_1.validateRequest
 ];
 ///deleteTodo/:todoId/:table/:type/:depth
 async function deleteTodoController(req, res) {
