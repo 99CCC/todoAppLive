@@ -1,3 +1,17 @@
+## 30.01.2025 01:01
+Fixed the loadtodochildren to (too sleepy to write full devlog heres my notepad)
+Started node/grandchildren addition and refactor:
+    -Create Node OK
+-Update Node  OK
+-Add in on Delete child < delete nodes OK
+-Add in on get child < fetch nodes aswell OK
+-Delete Node -still need onlydelete node OK
+
+-Split the save into two:
+	-editing title auto saves when clicked out
+	-body: separate api call
+		-(Only call needed onClose())
+
 ## 28.01.2025 23:16
 Started node/grandchildren addition and refactor:
     -Create Node OK
