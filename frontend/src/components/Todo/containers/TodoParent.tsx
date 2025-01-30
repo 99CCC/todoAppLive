@@ -36,7 +36,8 @@ const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle }) => {
     };
 
     function handleSave() {
-        //Implement setTitle()
+        setTitle(title);
+        //await update
         setShow(false);
     }
 
@@ -73,20 +74,33 @@ const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle }) => {
                 {expanded && children.length > 0 && (
                     <div className="mt-2">
                         {children.map((child) => (
-                            <TodoChildComp inTodoId={inTodoId} inBody={child.body} inTitle={child.title} inDepth={child.depth} />
+                            <TodoChildComp todo_id={inTodoId}
+                                child_completed={child.child_completed}
+                                child_depth={child.child_depth}
+                                child_title={child.child_title}
+                                node={child.node} />
                         ))}
                     </div>
                 )}
 
-                {/* Render details if expanded */}
                 {expanded && children.length === 0 && <TodoDetail details={`Details for ${title}`} />}
             </div>
 
             <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton className="d-flex align-items-cente">
-                    <Modal.Title>{title}</Modal.Title>
+                <Modal.Header closeButton className="">
+   
+                        <h1>
+                        <input type="text" value={title}
+                            onChange={(e) => setTitle(e.target.value)} 
+                            style={{border: '0px', width: '100%', textIndent: '32px'}}
+                            className="text-center"    
+                        />
+                        </h1>
+
                 </Modal.Header>
-                <Modal.Body>Awaiting implementation of stats showing x/y subtasks done</Modal.Body>
+                <Modal.Body>
+
+                </Modal.Body>
                 <Modal.Footer>
                     <Button variant="danger" onClick={handleClose} style={{ width: `100%` }}>
                         Close

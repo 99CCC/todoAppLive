@@ -8,11 +8,17 @@ export interface TodoItem {
 }
 
 export interface TodoChild {
-    inTodoId: number,
+    todo_id: number,
+    child_completed: boolean,
+    child_depth: number[],
+    child_title: string,
+    node: Node[]
+}
+
+export interface Node {
+    node_id: number,
     completed: boolean,
-    title: string,
-    body: number[],
-    depth: number[]
+    body: string
 }
 
 export async function createInstance(token: string) {
@@ -32,6 +38,8 @@ export async function loadTodo(){
     }
 }
 
+//export async function updateTodo()
+
 export async function loadTodoChild(todoId: number, depth?: number[]){
     try {
         const token = authService.getToken();
@@ -41,7 +49,6 @@ export async function loadTodoChild(todoId: number, depth?: number[]){
                 {todoId, type: "parent", table: "active"};
         const res = await axios.post(url!, body, {headers: {Authorization: "Bearer "+token}});
         const resData: TodoChild[] = res.data.dbRes;
-        console.log(resData);
         return resData;
 
     } catch (error) {
@@ -62,4 +69,6 @@ export async function saveTodoChild(depth: number[], todoId: number, body: strin
         console.error(error);
         return false;
     }
+
+
 }
