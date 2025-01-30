@@ -1,0 +1,63 @@
+function test(){
+
+const model = [
+  {f1: "v1",
+   nodeId: "x1"
+  },
+    {f1: "v1",
+   nodeId: "x2"
+  },
+    {f1: "v2",
+   nodeId: "x3"
+  },
+    {f1: "v2",
+   nodeId: "x4"
+  }
+]
+
+let x = Object.groupBy(model, item => item.f1) || undefined;
+
+const y = Object.values(x).map((z) => ({key: z?.f1, value: z?.map(...)}))
+
+console.log(y);
+
+}
+test();
+
+
+
+
+
+/*
+
+const modelRes = model.reduce((acc, curr) => {
+
+  if(!acc[curr.f1]) {
+    acc[curr.f1] = [];
+  }
+
+  acc[curr.f1].push(curr.f1)
+  acc[curr.f1].push(curr.nodeId);
+
+
+  return acc;
+});
+*/
+
+
+
+        let groupedRes = Object.groupBy(dbRes, item => item.child_depth);
+        if (!groupedRes) throw new Error("Shit just hit the fan");
+
+        const mappedRes = Object.entries(groupedRes).map(([a, b]) => ({
+            child: b?.map(c => ({
+                child_completed: c.child_completed,
+                child_title: c.child_title,
+                child_depth: c.child_depth
+            })),
+            node: b?.map(c => ({
+                node_id: c.node_id,
+                completed: c.completed,
+                body: c.body
+            }))
+        }));

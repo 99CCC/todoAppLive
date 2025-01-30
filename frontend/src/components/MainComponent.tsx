@@ -22,7 +22,7 @@ function MainComponent() {
       <Routes>
         <Route
           path="/"
-          element={token ? <Todo userId={0} userName={"Admin"} token={token} /> : <p>Loading...</p>}
+          element={token ? <Todo inUserId={0} inUserName={"Admin"} inToken={token} /> : <p>Loading...</p>}
         />
       </Routes>
     </BrowserRouter>

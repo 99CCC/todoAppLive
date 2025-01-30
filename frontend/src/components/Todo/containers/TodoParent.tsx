@@ -5,15 +5,15 @@ import TodoDetail from "./TodoDetail";
 import { Button, Col, Container, DropdownButton, Modal } from "react-bootstrap";
 
 interface TodoParentProps {
-    todo_id: number;
-    todo_title: string;
+    inTodoId: number;
+    inTodoTitle: string;
 }
 
-const TodoParent: React.FC<TodoParentProps> = ({ todo_id, todo_title }) => {
+const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle }) => {
     const [expanded, setExpanded] = useState(false);
     const [children, setChildren] = useState<TodoChild[]>([]);
     const [show, setShow] = useState<boolean>(false)
-    const [title, setTitle] = useState<string>(todo_title)
+    const [title, setTitle] = useState<string>(inTodoTitle)
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -25,7 +25,7 @@ const TodoParent: React.FC<TodoParentProps> = ({ todo_id, todo_title }) => {
         }
 
         try {
-            const childrenRes = await loadTodoChild(todo_id);
+            const childrenRes = await loadTodoChild(inTodoId);
             if (childrenRes && childrenRes.length > 0) {
                 setChildren(childrenRes);
             }
@@ -73,7 +73,7 @@ const TodoParent: React.FC<TodoParentProps> = ({ todo_id, todo_title }) => {
                 {expanded && children.length > 0 && (
                     <div className="mt-2">
                         {children.map((child) => (
-                            <TodoChildComp todo_id={todo_id} body={child.body} title={child.title} depth={child.depth} />
+                            <TodoChildComp inTodoId={inTodoId} inBody={child.body} inTitle={child.title} inDepth={child.depth} />
                         ))}
                     </div>
                 )}

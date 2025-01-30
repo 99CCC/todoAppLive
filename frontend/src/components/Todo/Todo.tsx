@@ -1,23 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { createInstance, loadTodo, TodoItem } from "./ApiController";
-import TodoChildComp from "./containers/TodoChild";
 import TodoParent from "./containers/TodoParent";
-import { authController } from "../../auth/authController";
-import { authService } from "../../auth/authService";
+
 
 
 interface TodoProps {
-    userId: number;
-    userName: string;
-    token: string;
+    inUserId: number;
+    inUserName: string;
+    inToken: string;
 }
 
-const Todo: React.FC<TodoProps> = ({ userId, userName, token }) => {
-   // const [auth, setAuth] = useState(authService.getInstance(token).token);
+const Todo: React.FC<TodoProps> = ({ inUserId, inUserName, inToken }) => {
     const [todos, setTodos] = useState<TodoItem[]>([]);
     
     useEffect(() => {
-        createInstance(token).then(() => {
+        createInstance(inToken).then(() => {
             const fetchTodos = async () => {
                 try {
                     const todoRes = await loadTodo();
@@ -31,14 +28,14 @@ const Todo: React.FC<TodoProps> = ({ userId, userName, token }) => {
         fetchTodos();
         })
 
-    }, [userId]);
+    }, [inUserId]);
 
     return (
         <div className="container mt-4">
-            <h1 className="text-center mb-4">{userName}'s Todo-List</h1>
+            <h1 className="text-center mb-4">{inUserName}'s Todo-List</h1>
             <div className="list-group">
                 {todos.map((todo) => (
-                    <TodoParent key={todo.todo_id} todo_id={todo.todo_id} todo_title={todo.title} />
+                    <TodoParent key={todo.todo_id} inTodoId={todo.todo_id} inTodoTitle={todo.title} />
                 ))}
             </div>
         </div>

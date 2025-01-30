@@ -32,9 +32,32 @@ async function loadTodoChildModel(todoId, type, depth, tableInput, userId) {
                 message: "No children found"
             };
         }
+        //polyfill
+        Object.groupBy ??= function groupBy(iterable, callbackfn) {
+            const obj = Object.create(null);
+            let i = 0;
+            for (const value of iterable) {
+                const key = callbackfn(value, i++);
+                key in obj ? obj[key].push(value) : (obj[key] = [value]);
+            }
+            return obj;
+        };
+        let groupedRes = Object.groupBy(dbRes, item => item.child_depth);
+        if (!groupedRes)
+            throw new Error("Shit just hit the fan");
+        const mappedRes = Object.entries(groupedRes).map(([a, b]) => ({
+            child_completed: b[0].child_completed,
+            child_title: b[0].child_title,
+            child_depth: b[0].child_depth,
+            node: b?.map(c => ({
+                node_id: c.node_id,
+                completed: c.completed,
+                body: c.body
+            }))
+        }));
         return {
             checkFlag: true,
-            dbRes: dbRes
+            dbRes: mappedRes
         };
     }
     catch (error) {

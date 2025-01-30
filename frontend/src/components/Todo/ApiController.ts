@@ -8,10 +8,10 @@ export interface TodoItem {
 }
 
 export interface TodoChild {
-    todo_id: number,
+    inTodoId: number,
     completed: boolean,
     title: string,
-    body: string,
+    body: number[],
     depth: number[]
 }
 
@@ -39,12 +39,13 @@ export async function loadTodoChild(todoId: number, depth?: number[]){
         let body = depth !== undefined ?
             {todoId, type: "child", table: "active", depth} :
                 {todoId, type: "parent", table: "active"};
-
         const res = await axios.post(url!, body, {headers: {Authorization: "Bearer "+token}});
         const resData: TodoChild[] = res.data.dbRes;
+        console.log(resData);
         return resData;
 
     } catch (error) {
+        console.error(error);
         throw error;
     }
 }

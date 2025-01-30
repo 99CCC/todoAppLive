@@ -1,22 +1,23 @@
 import React, { useState } from "react";
-import { loadTodoChild, saveTodoChild, TodoChild, TodoItem } from "../ApiController";
+import { loadTodoChild, saveTodoChild, TodoChild } from "../ApiController";
 import TodoDetail from "./TodoDetail";
 import { Button, Col, Modal, Row } from "react-bootstrap";
 
 interface TodoChildProps {
-    todo_id: number;
-    depth: number[];
-    body: string;
-    title: string;
+    inTodoId: number;
+    inDepth: number[];
+    inBody: number[];
+    inTitle: string;
 }
 
-const TodoChildComp: React.FC<TodoChildProps> = ({ todo_id, depth, body, title }) => {
+const TodoChildComp: React.FC<TodoChildProps> = ({ inTodoId, inDepth, inBody, inTitle }) => {
     const [expanded, setExpanded] = useState(false);
     const [children, setChildren] = useState<TodoChild[]>([]);
     const [show, setShow] = useState<boolean>(false);
-    const [text, setText] = useState<string>(body);
+    const [title, setTitle] = useState<string>(inTitle);
+    const [body, setBody] = useState<number[]>(inBody);
 
-    const handleClose = () => {setShow(false); setText(body);}
+    const handleClose = () => {setShow(false); setBody(inBody);}
     const handleShow = () => setShow(true);
 
 
@@ -27,7 +28,7 @@ const TodoChildComp: React.FC<TodoChildProps> = ({ todo_id, depth, body, title }
         }
 
         try {
-            const childrenRes = await loadTodoChild(todo_id, depth);
+            const childrenRes = await loadTodoChild(inTodoId, inDepth);
             if (childrenRes && childrenRes.length > 0) {
                 setChildren(childrenRes);
             }
@@ -41,7 +42,7 @@ const TodoChildComp: React.FC<TodoChildProps> = ({ todo_id, depth, body, title }
     //Maybe add in some more failsafes, +add in green checkmark when save = true
     async function handleSave() {
         try {
-            await saveTodoChild(depth,todo_id,text);
+            await saveTodoChild(inDepth,inTodoId,title);
             setShow(false);
         } catch (error) {
             
@@ -52,7 +53,7 @@ const TodoChildComp: React.FC<TodoChildProps> = ({ todo_id, depth, body, title }
     return (
         <>
             <div className="mb-2"
-                style={{ marginLeft: `${depth.length * 20}px` }}>
+                style={{ marginLeft: `${inDepth.length * 20}px` }}>
 
                 {/* Main Todo Item */}
                 <Row>
@@ -75,7 +76,7 @@ const TodoChildComp: React.FC<TodoChildProps> = ({ todo_id, depth, body, title }
                 {expanded && children.length > 0 && (
                     <div className="mt-2">
                         {children.map((child) => (
-                            <TodoChildComp key={child.depth.toString()} todo_id={todo_id} depth={child.depth} body={child.body} title={child.title} />
+                            <TodoChildComp key={child.depth.toString()} inTodoId={inTodoId} inDepth={child.depth} inBody={child.body} inTitle={child.title} />
                         ))}
                     </div>
                 )}
@@ -88,7 +89,7 @@ const TodoChildComp: React.FC<TodoChildProps> = ({ todo_id, depth, body, title }
                 <Modal.Header closeButton className="d-flex align-items-cente">
                     <Modal.Title>{title}</Modal.Title>
                 </Modal.Header>
-                <Modal.Body><textarea value={text} onChange={(e) => setText(e.target.value)} style={{ width: `100%`, height: `100%` }}></textarea></Modal.Body>
+                <Modal.Body><textarea value={body.toString()} onChange={(e) => setTitle(e.target.value)} style={{ width: `100%`, height: `100%` }}></textarea></Modal.Body>
                 <Modal.Footer>
                     <Button variant="danger" onClick={handleClose} style={{ width: `100%` }}>
                         Close
