@@ -1,3 +1,10 @@
+## 30.01.2025 23:05
+We slapped in the nodes into the childs properly and made title editable for parent (missing save)
+And made sql script to truncate and insert testdata
+Next on agenda:
+    -Finnish up save on edit title, and make list of rest of endpoints to tie in
+        -then tie in endpoints
+
 ## 30.01.2025 01:01
 Fixed the loadtodochildren to (too sleepy to write full devlog heres my notepad)
 Started node/grandchildren addition and refactor:
