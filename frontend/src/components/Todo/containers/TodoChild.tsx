@@ -1,22 +1,36 @@
 import React, { useState } from "react";
-import { loadTodoChild, saveTodoChild, TodoChild, Node } from "../ApiController";
-import TodoDetail from "./TodoDetail";
+import { loadTodoChild, updateTodo, TodoChild, Node } from "../ApiController";
 import { Button, Col, ListGroup, Modal, Row } from "react-bootstrap";
 
+interface TodoChildProps {
+    todo_id: number;
+    child_completed: boolean;
+    child_depth: number[];
+    child_title: string;
+    node: Node[];
+    updateChildTitle: (childDepth: number[], newTitle: string) => void;
+}
 
-const TodoChildComp: React.FC<TodoChild> = ({ todo_id, child_completed, child_depth, child_title, node }) => {
+const TodoChildComp: React.FC<TodoChildProps> = ({
+    todo_id,
+    child_completed,
+    child_depth,
+    child_title,
+    node,
+    updateChildTitle,
+}) => {
     const [expanded, setExpanded] = useState(false);
     const [children, setChildren] = useState<TodoChild[]>([]);
-    const [show, setShow] = useState<boolean>(false);
-    const [localTitle, setTitle] = useState<string>(child_title);
+    const [show, setShow] = useState(false);
+    const [localTitle, setTitle] = useState(child_title);
     const [localBody, setBody] = useState<string>();
-    const [localNode, setNode] = useState<any[]>(node);
 
-    const handleClose = () => {setShow(false); setBody(node[0].body);} //<-- OBS! need to know which one we're setting
-        //Set node[x] as params here
+    const handleClose = () => {
+        setShow(false);
+        setBody(node[0]?.body); 
+    };
 
-    const handleShow = () =>{setShow(true);}
-
+    const handleShow = () => setShow(true);
 
     const toggleExpand = async () => {
         if (expanded) {
@@ -26,7 +40,6 @@ const TodoChildComp: React.FC<TodoChild> = ({ todo_id, child_completed, child_de
 
         try {
             const childrenRes = await loadTodoChild(todo_id, child_depth);
-            console.log(childrenRes);
             if (childrenRes && childrenRes.length > 0) {
                 setChildren(childrenRes);
             }
@@ -36,23 +49,30 @@ const TodoChildComp: React.FC<TodoChild> = ({ todo_id, child_completed, child_de
         }
     };
 
-    //Maybe add in some more failsafes, +add in green checkmark when save = true
     async function handleSave() {
         try {
-            await saveTodoChild(child_depth, todo_id, child_title);
+            await updateTodo(todo_id, localTitle, child_depth);
+            updateChildTitle(child_depth, localTitle);
             setShow(false);
         } catch (error) {
-            
             console.error(error);
         }
     }
 
+    const updateSubChildTitle = (childDepth: number[], newTitle: string) => {
+        setChildren((prevChildren) =>
+            prevChildren.map((child) =>
+                JSON.stringify(child.child_depth) === JSON.stringify(childDepth)
+                    ? { ...child, child_title: newTitle }
+                    : child
+            )
+        );
+    };
+
+
     return (
         <>
-            <div className="mb-2"
-                style={{ marginLeft: `${child_depth.length * 20}px` }}>
-
-                {/* Main Todo Item */}
+            <div className="mb-2" style={{ marginLeft: `${child_depth.length * 20}px` }}>
                 <Row>
                     <div className="d-flex align-items-center p-2 border rounded">
                         <Col>
@@ -64,44 +84,47 @@ const TodoChildComp: React.FC<TodoChild> = ({ todo_id, child_completed, child_de
                         <button className="btn btn-sm btn-primary" onClick={toggleExpand}>
                             {expanded ? "Hide" : "Expand"}
                         </button>
-
-
                     </div>
                 </Row>
 
-                {/* Child items */}
                 {expanded && children.length > 0 && (
                     <div className="mt-2">
                         {children.map((child) => (
-                            <TodoChildComp key={child.child_depth.toString()} 
-                            todo_id={todo_id} child_completed={child.child_completed} 
-                            child_depth={child.child_depth} child_title={child.child_title} 
-                            node={child.node}/>
+                            <TodoChildComp
+                                key={JSON.stringify(child.child_depth)}
+                                todo_id={todo_id}
+                                child_completed={child.child_completed}
+                                child_depth={child.child_depth}
+                                child_title={child.child_title}
+                                node={child.node}
+                                updateChildTitle={updateSubChildTitle}
+                            />
                         ))}
                     </div>
                 )}
-
-                {/* Render details if expanded */}
-                {expanded && children.length === 0 && <TodoDetail details={`Details for ${child_title}`} />}
             </div>
 
             <Modal show={show} onHide={handleClose} className="modal-xl">
-                <Modal.Header closeButton className="d-flex align-items-cente">
-                    <Modal.Title>{child_title}</Modal.Title>
+                <Modal.Header closeButton>
+                    <h1>
+                        <input
+                            type="text"
+                            value={localTitle}
+                            onChange={(e) => setTitle(e.target.value)}
+                            style={{ border: "0px", width: "100%", textIndent: "32px" }}
+                            className="text-center"
+                        />
+                    </h1>
                 </Modal.Header>
                 <Modal.Body>
-                    
-                {show && localNode.length > 0 && (
                     <div>
                         <ListGroup>
-                        {localNode.map((node) => (
-                    <ListGroup.Item>{node.body}</ListGroup.Item>
+                        {node.map((node) => (
+                    <ListGroup.Item>{node.body}</ListGroup.Item> /*REMEMBER NEED TO ITERATE AND MAKE NODES AS COMPS*/
                         ))}
                         </ListGroup>
                     </div>
-                )}
-                     
-                     </Modal.Body>
+                </Modal.Body>
                 <Modal.Footer>
                     <Button variant="danger" onClick={handleClose} style={{ width: `100%` }}>
                         Close

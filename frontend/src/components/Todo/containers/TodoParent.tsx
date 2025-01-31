@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { loadTodoChild, TodoChild } from "../ApiController";
+import { loadTodoChild, TodoChild, updateTodo } from "../ApiController";
 import TodoChildComp from "./TodoChild";
-import TodoDetail from "./TodoDetail";
 import { Button, Col, Container, DropdownButton, Modal } from "react-bootstrap";
 
 interface TodoParentProps {
@@ -12,8 +11,8 @@ interface TodoParentProps {
 const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle }) => {
     const [expanded, setExpanded] = useState(false);
     const [children, setChildren] = useState<TodoChild[]>([]);
-    const [show, setShow] = useState<boolean>(false)
-    const [title, setTitle] = useState<string>(inTodoTitle)
+    const [show, setShow] = useState(false);
+    const [title, setTitle] = useState(inTodoTitle);
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -35,72 +34,70 @@ const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle }) => {
         }
     };
 
-    function handleSave() {
-        setTitle(title);
-        //await update
+    async function handleSave() {
+        await updateTodo(inTodoId, title);
         setShow(false);
     }
+
+    const updateChildTitle = (childDepth: number[], newTitle: string) => {
+        setChildren((prevChildren) =>
+            prevChildren.map((child) =>
+                JSON.stringify(child.child_depth) === JSON.stringify(childDepth)
+                    ? { ...child, child_title: newTitle }
+                    : child
+            )
+        );
+    };
 
     return (
         <>
             <div className="mb-2">
-                {/* Main Todo Item */}
                 <Container className="d-flex align-items-center">
-
                     <Container className="fluid d-flex align-items-center p-4 border rounded">
                         <Col>
                             <span>{title}</span>
                         </Col>
-                        <button className="btn btn-sm btn-secondary" onClick={handleShow} style={{}}>
-                            Edit</button>
+                        <button className="btn btn-sm btn-secondary" onClick={handleShow}>
+                            Edit
+                        </button>
                         <button className="btn btn-sm btn-primary" onClick={toggleExpand}>
                             {expanded ? "Hide" : "Expand"}
                         </button>
                     </Container>
 
-                    {/* Delete Button with animation*/}
-
-                    <DropdownButton
-                        id={`dropdown-button-drop-end`}
-                        variant="secondary"
-                        drop="end"
-                        title={""} children={undefined}
-                    />
-
-
+                    <DropdownButton id={`dropdown-button-drop-end`} variant="secondary" drop="end" title={""} children={undefined} />
                 </Container>
 
-                {/* Child items */}
                 {expanded && children.length > 0 && (
                     <div className="mt-2">
                         {children.map((child) => (
-                            <TodoChildComp todo_id={inTodoId}
+                            <TodoChildComp
+                                key={JSON.stringify(child.child_depth)}
+                                todo_id={inTodoId}
                                 child_completed={child.child_completed}
                                 child_depth={child.child_depth}
                                 child_title={child.child_title}
-                                node={child.node} />
+                                node={child.node}
+                                updateChildTitle={updateChildTitle}
+                            />
                         ))}
                     </div>
                 )}
-
-                {expanded && children.length === 0 && <TodoDetail details={`Details for ${title}`} />}
             </div>
 
-            <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton className="">
-   
-                        <h1>
-                        <input type="text" value={title}
-                            onChange={(e) => setTitle(e.target.value)} 
-                            style={{border: '0px', width: '100%', textIndent: '32px'}}
-                            className="text-center"    
+            <Modal show={show}>
+                <Modal.Header>
+                    <h1>
+                        <input
+                            type="text"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            style={{ border: "0px", width: "100%", textIndent: "32px" }}
+                            className="text-center"
                         />
-                        </h1>
-
+                    </h1>
                 </Modal.Header>
-                <Modal.Body>
-
-                </Modal.Body>
+                <Modal.Body></Modal.Body>
                 <Modal.Footer>
                     <Button variant="danger" onClick={handleClose} style={{ width: `100%` }}>
                         Close
@@ -110,9 +107,7 @@ const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle }) => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-
         </>
-
     );
 };
 

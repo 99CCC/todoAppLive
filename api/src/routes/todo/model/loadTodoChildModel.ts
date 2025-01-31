@@ -26,7 +26,7 @@ export async function loadTodoChildModel(todoId: number, type: string, depth: nu
             query += `AND "depth"[$3] = $4 `;
         }
 
-        query += `AND user_id = ${userId};`;
+        query += `AND user_id = ${userId};`; //need to find to order it by depth or we solve it down in the map
 
         const dbRes = await dbServiceInstance.queryMethod(query, params);
 

@@ -9,7 +9,7 @@ async function loadTodoChildModel(todoId, type, depth, tableInput, userId) {
             depth = [];
         }
         ;
-        let query = `SELECT ttc.completed AS child_completed, ttc.title AS child_title, ttc.depth AS child_depth, tn.*   
+        let query = `SELECT ttp.todo_id, ttc.completed AS child_completed, ttc.title AS child_title, ttc.depth AS child_depth, tn.*   
                 FROM todo.todo_children ttc
                 JOIN todo.${queryTable} ttp ON ttp.todo_id = ttc.todo_id
                 JOIN todo.node tn ON tn.node_id = ANY(ttc.body)
@@ -46,6 +46,7 @@ async function loadTodoChildModel(todoId, type, depth, tableInput, userId) {
         if (!groupedRes)
             throw new Error("Shit just hit the fan");
         const mappedRes = Object.entries(groupedRes).map(([a, b]) => ({
+            todo_id: b[0].todo_id,
             child_completed: b[0].child_completed,
             child_title: b[0].child_title,
             child_depth: b[0].child_depth,

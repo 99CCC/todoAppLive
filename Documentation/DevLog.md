@@ -1,3 +1,34 @@
+## 01.02.2025
+-Add stats to the parent body
+	-Add a column and triggers that counts
+		how many completed childs/nodes
+
+-Text
+	-Add text for nodes/render nodes
+	-Make'em completable
+
+-Buttons
+--Delete
+--Add new node
+--Add new child
+--Add new parent 
+
+	-Draw design for where buttons should be placed
+		-place the buttons
+
+-Make child completable
+-Make parent completable
+-Make node completable
+
+-Add in state switch
+-Login screen
+
+
+## 31.01.2025 21:42
+Structural issue, the titles of the childs exist in two components, the modal and the parent,
+updating 1 does not update the other, the fix is to pass the set function to the child,
+but we cant do this as I've made the children useState an array...
+
 ## 30.01.2025 23:05
 We slapped in the nodes into the childs properly and made title editable for parent (missing save)
 And made sql script to truncate and insert testdata

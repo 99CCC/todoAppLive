@@ -38,7 +38,20 @@ export async function loadTodo(){
     }
 }
 
-//export async function updateTodo()
+export async function updateTodo(todoId: number, title: string, depth?: number[]){
+    try {
+        const token = authService.getToken();
+        const url = process.env.REACT_APP_UPDATE_TODO_URL;
+        let body: any = {todoId, title};
+        depth !== undefined && (body['depth'] = depth);
+
+        const res = await axios.put(url!, body, {headers: {Authorization: "Bearer "+token}});
+        return res.status; 
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+}
 
 export async function loadTodoChild(todoId: number, depth?: number[]){
     try {
@@ -53,22 +66,6 @@ export async function loadTodoChild(todoId: number, depth?: number[]){
 
     } catch (error) {
         console.error(error);
-        throw error;
-    }
-}
-
-export async function saveTodoChild(depth: number[], todoId: number, body: string){
-    try {
-        const url = process.env.REACT_APP_UPDATE_TODO_URL;
-        const token = authService.getToken();
-        const jsonBody = {depth, todoId, body};
-        const res = await axios.put(url!,jsonBody, {headers:{Authorization: "Bearer "+token}})
-            return res.status === 200;
-
-    } catch (error) {
-        console.error(error);
         return false;
     }
-
-
 }
