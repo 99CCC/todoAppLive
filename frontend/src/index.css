@@ -19,3 +19,19 @@ body {
     overflow-y: scroll;
 }
 
+.hoverButtons {
+  transition: all 0.3s ease-in-out;
+}
+
+.hoverButtons:hover {
+  filter: drop-shadow(0px 0px 5px rgba(0,0,0,0.5));
+  cursor: pointer;
+}
+
+.hoverTodo {
+  transition: all 0.3s ease-in-out;
+}
+
+.hoverTodo:hover {
+  filter: drop-shadow(0px, 0px 10px rgba(0,0,0,0.5));
+}

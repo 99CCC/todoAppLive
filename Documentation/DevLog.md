@@ -1,3 +1,9 @@
+## 02.02.2025
+Added svgs and hover on buttons on parents
+Next on agenda:
+    -Same for children
+    -Figure out hover on whole todoparent div
+
 ## 01.02.2025
 -Add stats to the parent body
 	-Add a column and triggers that counts

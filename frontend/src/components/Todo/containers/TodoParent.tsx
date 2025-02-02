@@ -14,10 +14,11 @@ const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle }) => {
     const [show, setShow] = useState(false);
     const [title, setTitle] = useState(inTodoTitle);
 
-    const handleClose = () => setShow(false);
+    const handleClose = () => {setShow(false);}
     const handleShow = () => setShow(true);
 
-    const toggleExpand = async () => {
+    const toggleExpand = async (e: { stopPropagation: () => void; }) => {
+        e.stopPropagation();
         if (expanded) {
             setExpanded(false);
             return;
@@ -49,23 +50,36 @@ const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle }) => {
         );
     };
 
+    function handleDelete(e: { stopPropagation: () => void; }): void {
+        e.stopPropagation();
+        alert("Delete button clicked");
+    }
+
+    //HANDLESHOW FOR CONTAINER: Figure out structure for only using onclick when not layered
     return (
         <>
-            <div className="mb-2">
-                <Container className="d-flex align-items-center">
-                    <Container className="fluid d-flex align-items-center p-4 border rounded">
+            <div className="hoverTodo">
+                <Container className="d-flex align-items-center p-4 border rounded" onClick={handleShow}>
+                    <Container className="fluid d-flex align-items-center"> 
                         <Col>
                             <span>{title}</span>
                         </Col>
-                        <button className="btn btn-sm btn-secondary" onClick={handleShow}>
-                            Edit
-                        </button>
-                        <button className="btn btn-sm btn-primary" onClick={toggleExpand}>
-                            {expanded ? "Hide" : "Expand"}
-                        </button>
                     </Container>
-
-                    <DropdownButton id={`dropdown-button-drop-end`} variant="secondary" drop="end" title={""} children={undefined} />
+                        <img src="../../../images/deleteButton.svg" style={{
+                            width: `5%`, height: `5%`, fill: "none"
+                        }}
+                        onClick={handleDelete} className="hoverButtons"
+                        />
+                        <img src="../../../images/editButton.svg" style={{
+                            width: `5%`, height: `5%`, fill: "none"
+                        }}
+                        onClick={handleShow} className="hoverButtons"
+                        />
+                        <img src="../../../images/expandButton.svg" style={{
+                            width: `5%`, height: `5%`, fill: "none"
+                        }}
+                        onClick={toggleExpand} className="hoverButtons"
+                        />                                                
                 </Container>
 
                 {expanded && children.length > 0 && (

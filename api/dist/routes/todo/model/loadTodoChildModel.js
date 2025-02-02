@@ -24,7 +24,7 @@ async function loadTodoChildModel(todoId, type, depth, tableInput, userId) {
             params.push(depthParent);
             query += `AND "depth"[$3] = $4 `;
         }
-        query += `AND user_id = ${userId};`;
+        query += `AND user_id = ${userId};`; //need to find to order it by depth or we solve it down in the map
         const dbRes = await createServer_1.dbServiceInstance.queryMethod(query, params);
         if (dbRes.length === 0) {
             return {
