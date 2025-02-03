@@ -69,3 +69,19 @@ export async function loadTodoChild(todoId: number, depth?: number[]){
         return false;
     }
 }
+
+export async function createTodo(todoId: number, depth?: number[]){
+    try {
+        const token = authService.getToken();
+        const url = process.env.REACT_APP_CREATE_TODO_URL;
+        let body = depth !==undefined ?
+            {todoId, depth} : {todoId};
+        const res = await axios.post(url!, body, {headers: {Authorization: "Bearer "+token}});
+        console.log(res.data);
+        debugger;
+        return res.status === 200 ? true: false;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+}

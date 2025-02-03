@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { loadTodoChild, TodoChild, updateTodo } from "../ApiController";
+import { createTodo, loadTodoChild, TodoChild, updateTodo } from "../ApiController";
 import TodoChildComp from "./TodoChild";
 import { Button, Col, Container, DropdownButton, Modal } from "react-bootstrap";
 
@@ -8,14 +8,29 @@ interface TodoParentProps {
     inTodoTitle: string;
 }
 
-const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle }) => {
+const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle }) => { 
     const [expanded, setExpanded] = useState(false);
     const [children, setChildren] = useState<TodoChild[]>([]);
     const [show, setShow] = useState(false);
     const [title, setTitle] = useState(inTodoTitle);
 
-    const handleClose = () => {setShow(false);}
-    const handleShow = () => setShow(true);
+    const handleClose = () => {
+        setShow(false);
+    }
+    const handleShow = () => {
+        setShow(true);
+    }
+    const handleCreate = async (e: { stopPropagation: () => void; }) => {
+        e.stopPropagation();
+        const apiRes = await createTodo(inTodoId);
+        console.log(apiRes);
+        const childrenRes = await loadTodoChild(inTodoId);
+        if (childrenRes && childrenRes.length > 0) {
+            setChildren(childrenRes);
+        }
+        
+        return;
+    }
 
     const toggleExpand = async (e: { stopPropagation: () => void; }) => {
         e.stopPropagation();
@@ -58,28 +73,35 @@ const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle }) => {
     //HANDLESHOW FOR CONTAINER: Figure out structure for only using onclick when not layered
     return (
         <>
-            <div className="hoverTodo">
-                <Container className="d-flex align-items-center p-4 border rounded" onClick={handleShow}>
+            <div>
+                <Container className="d-flex align-items-center p-4 border rounded hoverTodo" onClick={handleShow}>
                     <Container className="fluid d-flex align-items-center"> 
                         <Col>
                             <span>{title}</span>
                         </Col>
                     </Container>
                         <img src="../../../images/deleteButton.svg" style={{
-                            width: `5%`, height: `5%`, fill: "none"
+                            width: `3%`, height: `3%`, fill: "none"
                         }}
                         onClick={handleDelete} className="hoverButtons"
                         />
                         <img src="../../../images/editButton.svg" style={{
-                            width: `5%`, height: `5%`, fill: "none"
+                            width: `3%`, height: `3%`, fill: "none"
                         }}
                         onClick={handleShow} className="hoverButtons"
                         />
                         <img src="../../../images/expandButton.svg" style={{
-                            width: `5%`, height: `5%`, fill: "none"
+                            width: `3%`, height: `3%`, fill: "none", 
+                            transform: expanded ? `rotate(180deg)` : '',
+                            transition: `transform 150ms ease`
                         }}
                         onClick={toggleExpand} className="hoverButtons"
-                        />                                                
+                        />
+                        <img src="../../../images/createButton.svg" style={{
+                            width: `3%`, height: `3%`, fill: "none"
+                        }}
+                        onClick={handleCreate} className="hoverButtons"
+                        />                                                 
                 </Container>
 
                 {expanded && children.length > 0 && (

@@ -9,7 +9,7 @@ export async function loadTodoChildModel(todoId: number, type: string, depth: nu
         let query = `SELECT ttp.todo_id, ttc.completed AS child_completed, ttc.title AS child_title, ttc.depth AS child_depth, tn.*   
                 FROM todo.todo_children ttc
                 JOIN todo.${queryTable} ttp ON ttp.todo_id = ttc.todo_id
-                JOIN todo.node tn ON tn.node_id = ANY(ttc.body)
+                LEFT JOIN todo.node tn ON tn.node_id = ANY(ttc.body)
                 WHERE array_length(ttc."depth", 1) = $1 
                 AND ttc.todo_id = $2 `;
 

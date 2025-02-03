@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { loadTodoChild, updateTodo, TodoChild, Node } from "../ApiController";
+import { loadTodoChild, updateTodo, TodoChild, Node, createTodo } from "../ApiController";
 import { Button, Col, ListGroup, Modal, Row } from "react-bootstrap";
 
 interface TodoChildProps {
@@ -31,8 +31,20 @@ const TodoChildComp: React.FC<TodoChildProps> = ({
     };
 
     const handleShow = () => setShow(true);
+    const handleCreate = async (e: { stopPropagation: () => void; }) => {
+            e.stopPropagation();
+            const apiRes = await createTodo(todo_id, child_depth);
+            console.log(apiRes);
+            const childrenRes = await loadTodoChild(todo_id, child_depth);
+            if (childrenRes && childrenRes.length > 0) {
+                setChildren(childrenRes);
+            }
+            
+            return;
+        };
 
-    const toggleExpand = async () => {
+    const toggleExpand = async (e: { stopPropagation: () => void; }) => {
+        e.stopPropagation();
         if (expanded) {
             setExpanded(false);
             return;
@@ -70,22 +82,40 @@ const TodoChildComp: React.FC<TodoChildProps> = ({
     };
 
 
+    function handleDelete(e: { stopPropagation: () => void; }): void {
+        e.stopPropagation();
+        throw new Error("Function not implemented.");
+    }
+
     return (
         <>
             <div className="mb-2" style={{ marginLeft: `${child_depth.length * 20}px` }}>
-                <Row>
-                    <div className="d-flex align-items-center p-2 border rounded">
+                
+                    <div className="d-flex align-items-center p-2 border rounded hoverTodo" onClick={handleShow}>
                         <Col>
                             <span>{child_title}</span>
                         </Col>
-                        <button className="btn btn-sm btn-secondary" onClick={handleShow}>
-                            Edit
-                        </button>
-                        <button className="btn btn-sm btn-primary" onClick={toggleExpand}>
-                            {expanded ? "Hide" : "Expand"}
-                        </button>
+                        <img src="../../../images/deleteButton.svg"
+                        style={{width: `3%`, height: `3%`, fill: "none"}}
+                        onClick={handleDelete} className="hoverButtons"/>
+                        
+                        <img src="../../../images/editButton.svg"
+                        style={{width: `3%`, height: `3%`, fill: "none"}}
+                        onClick={handleShow} className="hoverButtons"/>
+
+                        <img src="../../../images/expandButton.svg" style={{
+                            width: `3%`, height: `3%`, fill: "none", 
+                            transform: expanded ? `rotate(180deg)` : '',
+                            transition: `transform 150ms ease`
+                        }}
+                        onClick={toggleExpand} className="hoverButtons"
+                        />
+
+                        <img src="../../../images/createButton.svg" style={{
+                            width: `3%`, height: `3%`, fill: "none"}}
+                        onClick={handleCreate} className="hoverButtons"
+                        />  
                     </div>
-                </Row>
 
                 {expanded && children.length > 0 && (
                     <div className="mt-2">
