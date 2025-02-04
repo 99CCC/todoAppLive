@@ -1,3 +1,8 @@
+## 04.02.2025
+Added deletion for parents and create new todo-parent
+Next on agenda:
+    -Debugg the buggy mess that is to delete the nested children
+
 ## 02.02.2025
 Added svgs and hover on buttons on parents
 Next on agenda:
