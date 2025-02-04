@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { loadTodoChild, updateTodo, TodoChild, Node, createTodo } from "../ApiController";
+import { loadTodoChild, updateTodo, TodoChild, Node, createTodo, deleteTodo as apiDeleteTodo } from "../ApiController";
 import { Button, Col, ListGroup, Modal, Row } from "react-bootstrap";
 
 interface TodoChildProps {
@@ -9,6 +9,8 @@ interface TodoChildProps {
     child_title: string;
     node: Node[];
     updateChildTitle: (childDepth: number[], newTitle: string) => void;
+    removeChildByDepth: Function;
+
 }
 
 const TodoChildComp: React.FC<TodoChildProps> = ({
@@ -18,6 +20,7 @@ const TodoChildComp: React.FC<TodoChildProps> = ({
     child_title,
     node,
     updateChildTitle,
+    removeChildByDepth
 }) => {
     const [expanded, setExpanded] = useState(false);
     const [children, setChildren] = useState<TodoChild[]>([]);
@@ -27,21 +30,21 @@ const TodoChildComp: React.FC<TodoChildProps> = ({
 
     const handleClose = () => {
         setShow(false);
-        setBody(node[0]?.body); 
+        setBody(node[0]?.body);
     };
 
     const handleShow = () => setShow(true);
     const handleCreate = async (e: { stopPropagation: () => void; }) => {
-            e.stopPropagation();
-            const apiRes = await createTodo(todo_id, child_depth);
-            console.log(apiRes);
-            const childrenRes = await loadTodoChild(todo_id, child_depth);
-            if (childrenRes && childrenRes.length > 0) {
-                setChildren(childrenRes);
-            }
-            
-            return;
-        };
+        e.stopPropagation();
+        const apiRes = await createTodo(todo_id, child_depth);
+        console.log(apiRes);
+        const childrenRes = await loadTodoChild(todo_id, child_depth);
+        if (childrenRes && childrenRes.length > 0) {
+            setChildren(childrenRes);
+        }
+
+        return;
+    };
 
     const toggleExpand = async (e: { stopPropagation: () => void; }) => {
         e.stopPropagation();
@@ -81,41 +84,51 @@ const TodoChildComp: React.FC<TodoChildProps> = ({
         );
     };
 
+    const removeSubChildByDepth = (childDepth: number[]) => {
+        setChildren((prevChildren) =>
+            prevChildren.filter((child) =>
+                JSON.stringify(child.child_depth) === JSON.stringify(childDepth)
+            )
+        );
+    };
 
-    function handleDelete(e: { stopPropagation: () => void; }): void {
+
+    async function handleDelete(e: { stopPropagation: () => void; }) {
         e.stopPropagation();
-        throw new Error("Function not implemented.");
+        await apiDeleteTodo(todo_id, "active", child_depth);
+        await removeChildByDepth(child_depth);
     }
 
     return (
         <>
             <div className="mb-2" style={{ marginLeft: `${child_depth.length * 20}px` }}>
-                
-                    <div className="d-flex align-items-center p-2 border rounded hoverTodo" onClick={handleShow}>
-                        <Col>
-                            <span>{child_title}</span>
-                        </Col>
-                        <img src="../../../images/deleteButton.svg"
-                        style={{width: `3%`, height: `3%`, fill: "none"}}
-                        onClick={handleDelete} className="hoverButtons"/>
-                        
-                        <img src="../../../images/editButton.svg"
-                        style={{width: `3%`, height: `3%`, fill: "none"}}
-                        onClick={handleShow} className="hoverButtons"/>
 
-                        <img src="../../../images/expandButton.svg" style={{
-                            width: `3%`, height: `3%`, fill: "none", 
-                            transform: expanded ? `rotate(180deg)` : '',
-                            transition: `transform 150ms ease`
-                        }}
+                <div className="d-flex align-items-center p-2 border rounded hoverTodo" onClick={handleShow}>
+                    <Col>
+                        <span>{child_title}</span>
+                    </Col>
+                    <img src="../../../images/deleteButton.svg"
+                        style={{ width: `3%`, height: `3%`, fill: "none" }}
+                        onClick={handleDelete} className="hoverButtons" />
+
+                    <img src="../../../images/editButton.svg"
+                        style={{ width: `3%`, height: `3%`, fill: "none" }}
+                        onClick={handleShow} className="hoverButtons" />
+
+                    <img src="../../../images/expandButton.svg" style={{
+                        width: `3%`, height: `3%`, fill: "none",
+                        transform: expanded ? `rotate(180deg)` : '',
+                        transition: `transform 150ms ease`
+                    }}
                         onClick={toggleExpand} className="hoverButtons"
-                        />
+                    />
 
-                        <img src="../../../images/createButton.svg" style={{
-                            width: `3%`, height: `3%`, fill: "none"}}
+                    <img src="../../../images/createButton.svg" style={{
+                        width: `3%`, height: `3%`, fill: "none"
+                    }}
                         onClick={handleCreate} className="hoverButtons"
-                        />  
-                    </div>
+                    />
+                </div>
 
                 {expanded && children.length > 0 && (
                     <div className="mt-2">
@@ -128,18 +141,19 @@ const TodoChildComp: React.FC<TodoChildProps> = ({
                                 child_title={child.child_title}
                                 node={child.node}
                                 updateChildTitle={updateSubChildTitle}
+                                removeChildByDepth={removeSubChildByDepth}
                             />
                         ))}
                     </div>
                 )}
             </div>
 
-            <Modal show={show} onHide={handleClose} className="modal-xl">
-                <Modal.Header closeButton>
+            <Modal show={show}>
+                <Modal.Header>
                     <h1>
                         <input
                             type="text"
-                            value={localTitle}
+                            value={child_title}
                             onChange={(e) => setTitle(e.target.value)}
                             style={{ border: "0px", width: "100%", textIndent: "32px" }}
                             className="text-center"
@@ -147,11 +161,12 @@ const TodoChildComp: React.FC<TodoChildProps> = ({
                     </h1>
                 </Modal.Header>
                 <Modal.Body>
-                    <div>
+                    <div className="text-center mb-4">
+                        <Button variant="outline-dark">New Node</Button>
                         <ListGroup>
-                        {node.map((node) => (
-                    <ListGroup.Item>{node.body}</ListGroup.Item> /*REMEMBER NEED TO ITERATE AND MAKE NODES AS COMPS*/
-                        ))}
+                            {node.map((node) => (
+                                <ListGroup.Item>{node.body}</ListGroup.Item>
+                            ))}
                         </ListGroup>
                     </div>
                 </Modal.Body>

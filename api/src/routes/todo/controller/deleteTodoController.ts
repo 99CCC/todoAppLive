@@ -35,7 +35,7 @@ export async function deleteTodoController(req: AuthenticatedRequest, res: Respo
         const todoId = parseInt(req.params.todoId);
         const table = req.params.table;
         const depth = req.body.depth;
-
+        console.log("inputdepth in controller: ", depth);
         const modelRes = await deleteTodoModel(userId, todoId, table, depth);
 
         if(modelRes.checkFlag){

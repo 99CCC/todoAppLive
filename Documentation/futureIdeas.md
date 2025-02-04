@@ -15,3 +15,6 @@
 
 ## Prod/Dev
  - use: process.env.NODE_ENV to figure out if were running a test build or prod build and based on that use different urls?
+
+## Edge cases / Issues
+- DELETE: if the user deletes all todo objects they cant create new ones (also cant create toos atm)

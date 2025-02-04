@@ -1,5 +1,5 @@
 import axios from "axios";
-import { authService } from "../../auth/authService";
+import { AuthService, authService } from "../../auth/authService";
 
 
 export interface TodoItem {
@@ -70,17 +70,44 @@ export async function loadTodoChild(todoId: number, depth?: number[]){
     }
 }
 
-export async function createTodo(todoId: number, depth?: number[]){
+export async function createTodo(todoId?: number, depth?: number[]){
     try {
         const token = authService.getToken();
         const url = process.env.REACT_APP_CREATE_TODO_URL;
-        let body = depth !==undefined ?
+        let body = {};
+        if(todoId !== undefined){
+        body = depth !==undefined ?
             {todoId, depth} : {todoId};
+        }
+
         const res = await axios.post(url!, body, {headers: {Authorization: "Bearer "+token}});
         console.log(res.data);
-        debugger;
         return res.status === 200 ? true: false;
     } catch (error) {
+        console.error(error);
+        return false;
+    }
+}
+
+export async function deleteTodo(todoId: number, table: string, depth?: number[]){
+    try{
+        const token = authService.getToken();
+        let url = process.env.REACT_APP_DELETE_TODO_URL;
+        url += `/${todoId}/${table}`;
+
+        const body = depth !== undefined ? {depth} : undefined;
+
+        console.log(body);
+
+        const res = await axios.post(url!, body!, {headers: {Authorization: "Bearer "+token}});
+        console.log(res);
+        console.log("dis the url: ", url, body);
+        if(res.status === 200){
+            return true;
+        }
+        return false;
+
+    }catch(error){
         console.error(error);
         return false;
     }

@@ -31,7 +31,7 @@ export async function createTodoController(req: AuthenticatedRequest, res: Respo
                 return
             }
         }else{
-            const title: string = req.body.title;
+            const title: string = req.body.title !== undefined ? req.body.title : "New Todo Object";
             
             const modelRes = await createTodoParentModel(userId, title);
 

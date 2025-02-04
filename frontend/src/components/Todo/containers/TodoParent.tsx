@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { createTodo, loadTodoChild, TodoChild, updateTodo } from "../ApiController";
 import TodoChildComp from "./TodoChild";
-import { Button, Col, Container, DropdownButton, Modal } from "react-bootstrap";
+import { Button, Col, Container, Modal } from "react-bootstrap";
 
 interface TodoParentProps {
     inTodoId: number;
     inTodoTitle: string;
+    deleteTodo: Function;
 }
 
-const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle }) => { 
+const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle, deleteTodo }) => { 
     const [expanded, setExpanded] = useState(false);
     const [children, setChildren] = useState<TodoChild[]>([]);
     const [show, setShow] = useState(false);
@@ -20,6 +21,7 @@ const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle }) => {
     const handleShow = () => {
         setShow(true);
     }
+
     const handleCreate = async (e: { stopPropagation: () => void; }) => {
         e.stopPropagation();
         const apiRes = await createTodo(inTodoId);
@@ -65,9 +67,17 @@ const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle }) => {
         );
     };
 
-    function handleDelete(e: { stopPropagation: () => void; }): void {
+    const removeChildByDepth = (childDepth: number[]) => {
+        setChildren((prevChildren) =>
+            prevChildren.filter((child) =>
+                JSON.stringify(child.child_depth) === JSON.stringify(childDepth)
+            )
+        );
+    };
+
+    async function handleDelete(e: { stopPropagation: () => void; }): Promise<void> {
         e.stopPropagation();
-        alert("Delete button clicked");
+        await deleteTodo(inTodoId, "active")
     }
 
     //HANDLESHOW FOR CONTAINER: Figure out structure for only using onclick when not layered
@@ -115,6 +125,7 @@ const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle }) => {
                                 child_title={child.child_title}
                                 node={child.node}
                                 updateChildTitle={updateChildTitle}
+                                removeChildByDepth={removeChildByDepth}
                             />
                         ))}
                     </div>

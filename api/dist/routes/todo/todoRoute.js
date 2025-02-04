@@ -13,7 +13,7 @@ const router = (0, express_1.Router)();
 router.get('/loadTodo/:table', loadTodoController_1.validateLoadTodo, loadTodoController_1.loadTodoController); //POSSIBLE: Add a sort tag per item, to have the user be able to sort them themselves
 router.post('/loadTodoChild', loadTodoChildController_1.validateLoadTodoChild, loadTodoChildController_1.loadTodoChildController);
 //Modifying Parent
-router.delete('/deleteTodo/:todoId/:table/:depth?', deleteTodoController_1.validateDeleteTodo, deleteTodoController_1.deleteTodoController);
+router.post('/deleteTodo/:todoId/:table/:depth?', deleteTodoController_1.validateDeleteTodo, deleteTodoController_1.deleteTodoController);
 router.put('/updateTodo', updateTodoController_1.validateUpdateTodo, updateTodoController_1.updateTodoController);
 //Creating parent | child
 router.post('/createTodo', createTodoController_1.createTodoController);

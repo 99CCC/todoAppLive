@@ -16,7 +16,7 @@ router.get('/loadTodo/:table', validateLoadTodo, loadTodoController); //POSSIBLE
 router.post('/loadTodoChild', validateLoadTodoChild, loadTodoChildController); 
 
 //Modifying Parent
-router.delete('/deleteTodo/:todoId/:table/:depth?', validateDeleteTodo, deleteTodoController);
+router.post('/deleteTodo/:todoId/:table/:depth?', validateDeleteTodo, deleteTodoController);
 router.put('/updateTodo', validateUpdateTodo, updateTodoController);
 
 //Creating parent | child

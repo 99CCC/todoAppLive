@@ -35,6 +35,7 @@ async function deleteTodoController(req, res) {
         const todoId = parseInt(req.params.todoId);
         const table = req.params.table;
         const depth = req.body.depth;
+        console.log("inputdepth in controller: ", depth);
         const modelRes = await (0, deleteTodoModel_1.deleteTodoModel)(userId, todoId, table, depth);
         if (modelRes.checkFlag) {
             res.status(200).json(modelRes);
