@@ -4,8 +4,8 @@ export async function deleteTodoModel(userId: number, todoId: number, tableInput
     try {
         console.log("loggert", depth);
         if (depth) {
-            const length = depth.length;
-            const lastDigit = depth[length - 1];
+            const length = depth.length; //1
+            const lastDigit = depth[length - 1]; //4
             const stringifiedArray = "ARRAY["+depth.join(",")+"]::NUMERIC[]";
             let prefixGuard = "";
             let nodeCollector: any[] = [];

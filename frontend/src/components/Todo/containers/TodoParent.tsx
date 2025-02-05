@@ -30,7 +30,6 @@ const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle, deleteTo
         if (childrenRes && childrenRes.length > 0) {
             setChildren(childrenRes);
         }
-        
         return;
     }
 
@@ -70,7 +69,7 @@ const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle, deleteTo
     const removeChildByDepth = (childDepth: number[]) => {
         setChildren((prevChildren) =>
             prevChildren.filter((child) =>
-                JSON.stringify(child.child_depth) === JSON.stringify(childDepth)
+                JSON.stringify(child.child_depth) !== JSON.stringify(childDepth)
             )
         );
     };

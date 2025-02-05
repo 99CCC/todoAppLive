@@ -2,20 +2,21 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createNodeModel = createNodeModel;
 const createServer_1 = require("../../../server/createServer");
-async function createNodeModel(depth) {
+async function createNodeModel(depth, todoId) {
     try {
         const stringifiedArray = "ARRAY[" + depth.join(",") + "]::NUMERIC[]";
         const query = `WITH node_insertion AS (
                             INSERT INTO todo.node (body) 
-                            VALUES ('') 
+                            VALUES ('New Node') 
                             RETURNING node_id
                         )
                         UPDATE todo.todo_children
                         SET body = array_append(body, (SELECT node_id FROM node_insertion))
-                        WHERE depth = ${stringifiedArray}
+                        WHERE depth = ${stringifiedArray} AND todo_id = $1
                         RETURNING (SELECT node_id FROM node_insertion);
                         `;
-        const dbRes = await createServer_1.dbServiceInstance.queryMethod(query);
+        const params = [todoId];
+        const dbRes = await createServer_1.dbServiceInstance.queryMethod(query, params);
         if (dbRes.length == 0) {
             return {
                 status: 500,

@@ -1,21 +1,22 @@
 import { dbServiceInstance } from "../../../server/createServer";
 
-export async function createNodeModel(depth: number[]){
+export async function createNodeModel(depth: number[], todoId: number){
     try {
 
         const stringifiedArray = "ARRAY["+depth.join(",")+"]::NUMERIC[]";
         
         const query = `WITH node_insertion AS (
                             INSERT INTO todo.node (body) 
-                            VALUES ('') 
+                            VALUES ('New Node') 
                             RETURNING node_id
                         )
                         UPDATE todo.todo_children
                         SET body = array_append(body, (SELECT node_id FROM node_insertion))
-                        WHERE depth = ${stringifiedArray}
+                        WHERE depth = ${stringifiedArray} AND todo_id = $1
                         RETURNING (SELECT node_id FROM node_insertion);
                         `;
-        const dbRes = await dbServiceInstance.queryMethod(query);
+        const params = [todoId];
+        const dbRes = await dbServiceInstance.queryMethod(query, params);
 
         if(dbRes.length == 0){
             return{

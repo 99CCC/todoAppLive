@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateCreateNode = void 0;
-exports.createNodeController = createNodeController;
+exports.validateLoadNode = void 0;
+exports.loadNodeController = loadNodeController;
 const errorHandler_1 = require("../../../middleware/errorHandler");
-const createNodeModel_1 = require("../model/createNodeModel");
 const express_validator_1 = require("express-validator");
 const validateRequest_1 = require("../../../middleware/validateRequest");
-exports.validateCreateNode = [
+const loadNodeModel_1 = require("../model/loadNodeModel");
+exports.validateLoadNode = [
     (0, express_validator_1.body)("depth")
         .notEmpty()
         .withMessage("field 'depth' is required"),
@@ -15,7 +15,7 @@ exports.validateCreateNode = [
         .withMessage("field 'todoId' is required"),
     validateRequest_1.validateRequest
 ];
-async function createNodeController(req, res) {
+async function loadNodeController(req, res) {
     try {
         const userId = req.user?.userId;
         if (userId === undefined) {
@@ -24,7 +24,7 @@ async function createNodeController(req, res) {
         }
         const depth = req.body.depth;
         const todoId = req.body.todoId;
-        const modelRes = await (0, createNodeModel_1.createNodeModel)(depth, todoId);
+        const modelRes = await (0, loadNodeModel_1.loadNodeModel)(depth, todoId);
         if (modelRes.checkFlag) {
             res.status(200).json(modelRes);
             return;

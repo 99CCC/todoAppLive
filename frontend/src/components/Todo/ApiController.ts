@@ -112,3 +112,37 @@ export async function deleteTodo(todoId: number, table: string, depth?: number[]
         return false;
     }
 }
+
+export async function createNode(depth: number[], todoId: number){
+    try {
+        const token = authService.getToken();
+        const url = process.env.REACT_APP_CREATE_NODE_URL;
+        console.log("createNode Url: ", url);
+        const body = {depth, todoId};
+
+        const res = await axios.post(url!, body, {headers:{Authorization: "Bearer "+token}});
+        console.log(res);
+
+        return res.status === 200 ? true: false;
+
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+}
+
+export async function loadNode(depth: number[], todoId: number){
+    try {
+        const token = authService.getToken();
+        const url = process.env.REACT_APP_LOAD_NODE_URL;
+        const body = {depth, todoId};
+        console.log("loadNode Url: ", url);
+
+        const res = await axios.post(url!, body, {headers: {Authorization: "Bearer "+token}});
+        return res.data.dbRes;
+    } catch (error) {
+        console.error(error);
+        return false;
+
+    }
+}

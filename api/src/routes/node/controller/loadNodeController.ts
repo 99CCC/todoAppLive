@@ -1,11 +1,11 @@
 import { RequestHandler, Response } from "express";
 import { AuthenticatedRequest } from "../../../sharedInterface/AuthenticatedRequest";
 import { errorHandler } from "../../../middleware/errorHandler";
-import { createNodeModel } from "../model/createNodeModel";
 import { body } from "express-validator";
 import { validateRequest } from "../../../middleware/validateRequest";
+import { loadNodeModel } from "../model/loadNodeModel";
 
-export const validateCreateNode: RequestHandler[] = [
+export const validateLoadNode: RequestHandler[] = [
     body("depth")
         .notEmpty()
         .withMessage("field 'depth' is required"),
@@ -15,7 +15,7 @@ export const validateCreateNode: RequestHandler[] = [
         validateRequest
 ];
 
-export async function createNodeController(req: AuthenticatedRequest, res: Response): Promise<void>{
+export async function loadNodeController(req: AuthenticatedRequest, res: Response): Promise<void>{
     try{
         const userId = req.user?.userId;
         if(userId === undefined){
@@ -24,7 +24,7 @@ export async function createNodeController(req: AuthenticatedRequest, res: Respo
         }
             const depth: number[] = req.body.depth;
             const todoId: number = req.body.todoId;
-            const modelRes = await createNodeModel(depth, todoId);
+            const modelRes = await loadNodeModel(depth, todoId);
 
             if(modelRes.checkFlag){
                 res.status(200).json(modelRes);

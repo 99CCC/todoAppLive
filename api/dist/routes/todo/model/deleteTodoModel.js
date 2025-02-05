@@ -6,8 +6,8 @@ async function deleteTodoModel(userId, todoId, tableInput, depth) {
     try {
         console.log("loggert", depth);
         if (depth) {
-            const length = depth.length;
-            const lastDigit = depth[length - 1];
+            const length = depth.length; //1
+            const lastDigit = depth[length - 1]; //4
             const stringifiedArray = "ARRAY[" + depth.join(",") + "]::NUMERIC[]";
             let prefixGuard = "";
             let nodeCollector = [];

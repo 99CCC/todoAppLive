@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { loadTodoChild, updateTodo, TodoChild, Node, createTodo, deleteTodo as apiDeleteTodo } from "../ApiController";
+import { loadTodoChild, updateTodo, TodoChild, Node, createTodo, deleteTodo as apiDeleteTodo, createNode, loadNode } from "../ApiController";
 import { Button, Col, ListGroup, Modal, Row } from "react-bootstrap";
+import NodeComp from "./Node";
 
 interface TodoChildProps {
     todo_id: number;
@@ -10,7 +11,6 @@ interface TodoChildProps {
     node: Node[];
     updateChildTitle: (childDepth: number[], newTitle: string) => void;
     removeChildByDepth: Function;
-
 }
 
 const TodoChildComp: React.FC<TodoChildProps> = ({
@@ -27,6 +27,7 @@ const TodoChildComp: React.FC<TodoChildProps> = ({
     const [show, setShow] = useState(false);
     const [localTitle, setTitle] = useState(child_title);
     const [localBody, setBody] = useState<string>();
+    const [localNode, setNode] = useState<Node[]>(node);
 
     const handleClose = () => {
         setShow(false);
@@ -42,7 +43,6 @@ const TodoChildComp: React.FC<TodoChildProps> = ({
         if (childrenRes && childrenRes.length > 0) {
             setChildren(childrenRes);
         }
-
         return;
     };
 
@@ -87,7 +87,7 @@ const TodoChildComp: React.FC<TodoChildProps> = ({
     const removeSubChildByDepth = (childDepth: number[]) => {
         setChildren((prevChildren) =>
             prevChildren.filter((child) =>
-                JSON.stringify(child.child_depth) === JSON.stringify(childDepth)
+                JSON.stringify(child.child_depth) !== JSON.stringify(childDepth)
             )
         );
     };
@@ -98,6 +98,18 @@ const TodoChildComp: React.FC<TodoChildProps> = ({
         await apiDeleteTodo(todo_id, "active", child_depth);
         await removeChildByDepth(child_depth);
     }
+
+    const handleCreateNode = async (e: { stopPropagation: () => void; }) => {
+        const apiRes = await createNode(child_depth, todo_id);
+        console.log(apiRes);
+        const nodeRes = await loadNode(child_depth, todo_id);
+        console.log(nodeRes);
+        if (nodeRes && nodeRes.length > 0) {
+            setNode(nodeRes);
+        }
+        return;
+    };
+
 
     return (
         <>
@@ -162,12 +174,10 @@ const TodoChildComp: React.FC<TodoChildProps> = ({
                 </Modal.Header>
                 <Modal.Body>
                     <div className="text-center mb-4">
-                        <Button variant="outline-dark">New Node</Button>
-                        <ListGroup>
-                            {node.map((node) => (
-                                <ListGroup.Item>{node.body}</ListGroup.Item>
-                            ))}
-                        </ListGroup>
+                    <Button variant="outline-dark" onClick={handleCreateNode} style={{marginBottom: `1%`}}>New Node</Button>
+                    {localNode.map((node) => (
+                        <NodeComp key={node.node_id} node={node} child_depth={child_depth} todo_id={todo_id}/>
+                    ))}
                     </div>
                 </Modal.Body>
                 <Modal.Footer>

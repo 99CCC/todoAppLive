@@ -13,7 +13,6 @@ export async function loadTodoChildModel(todoId: number, type: string, depth: nu
                 WHERE array_length(ttc."depth", 1) = $1 
                 AND ttc.todo_id = $2 `;
 
-
         let length = depth.length > 0 ? depth.length + 1 : 1;
         let params = [length, todoId];
 
