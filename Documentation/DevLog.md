@@ -1,3 +1,6 @@
+## 05.02.2025 22:44
+Added node, next: add functions up to parents for crud
+
 ## 04.02.2025
 Added deletion for parents and create new todo-parent
 Next on agenda:
