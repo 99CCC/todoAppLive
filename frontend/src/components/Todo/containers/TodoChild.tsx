@@ -68,6 +68,7 @@ const TodoChildComp: React.FC<TodoChildProps> = ({
         try {
             await updateTodo(todo_id, localTitle, child_depth);
             updateChildTitle(child_depth, localTitle);
+            setNode(await loadNode(child_depth, todo_id));
             setShow(false);
         } catch (error) {
             console.error(error);
@@ -117,7 +118,7 @@ const TodoChildComp: React.FC<TodoChildProps> = ({
 
                 <div className="d-flex align-items-center p-2 border rounded hoverTodo" onClick={handleShow}>
                     <Col>
-                        <span>{child_title}</span>
+                        <span>{localTitle}</span>
                     </Col>
                     <img src="../../../images/deleteButton.svg"
                         style={{ width: `3%`, height: `3%`, fill: "none" }}
@@ -165,7 +166,7 @@ const TodoChildComp: React.FC<TodoChildProps> = ({
                     <h1>
                         <input
                             type="text"
-                            value={child_title}
+                            value={localTitle}
                             onChange={(e) => setTitle(e.target.value)}
                             style={{ border: "0px", width: "100%", textIndent: "32px" }}
                             className="text-center"

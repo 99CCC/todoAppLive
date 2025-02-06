@@ -146,3 +146,16 @@ export async function loadNode(depth: number[], todoId: number){
 
     }
 }
+
+export async function updateNode(nodeId: number, params: { body?: string, completed?: boolean}){
+    try {
+        const token = authService.getToken();
+        let url = process.env.REACT_APP_UPDATE_NODE;
+        url += "/"+nodeId;
+        const res = await axios.put(url!, params, {headers: {Authorization: "Bearer "+token}});
+        return res.status;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+}

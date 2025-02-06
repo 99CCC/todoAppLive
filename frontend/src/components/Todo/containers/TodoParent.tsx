@@ -25,7 +25,6 @@ const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle, deleteTo
     const handleCreate = async (e: { stopPropagation: () => void; }) => {
         e.stopPropagation();
         const apiRes = await createTodo(inTodoId);
-        console.log(apiRes);
         const childrenRes = await loadTodoChild(inTodoId);
         if (childrenRes && childrenRes.length > 0) {
             setChildren(childrenRes);

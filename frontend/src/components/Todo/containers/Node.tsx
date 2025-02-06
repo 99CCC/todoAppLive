@@ -1,6 +1,6 @@
 import { Button, Col, Container, ListGroup } from "react-bootstrap";
-import { createNode, loadNode, Node } from "../ApiController";
-import { useState } from "react";
+import { createNode, loadNode, Node, updateNode } from "../ApiController";
+import { useEffect, useState } from "react";
 
 interface NodeProps {
     node: Node;
@@ -10,9 +10,15 @@ interface NodeProps {
 
 const NodeComp: React.FC<NodeProps> = ({ node, child_depth, todo_id }) => {
     const [localNode, setNode] = useState<Node>(node);
+    const [text, setText] = useState<string>(node.body);
     const [body, setBody] = useState<string>(node.body);
     const checkBoxUrl = "../../../images/CheckBox.svg";
     const checkBoxDoneUrl = "../../../images/CheckBox.svg"
+
+    useEffect(() =>{
+        const timeOutId = setTimeout(() => handleEditBody(text, localNode.node_id), 500);
+        return () => clearTimeout(timeOutId);
+    }, [text]);
 
     function handleDelete(): void {
         throw new Error("Function not implemented.");
@@ -22,9 +28,9 @@ const NodeComp: React.FC<NodeProps> = ({ node, child_depth, todo_id }) => {
         throw new Error("Function not implemented.");
     }
 
-    function handleEditBody(value: string, node_id: number): void {
+    async function handleEditBody(value: string, node_id: number): Promise<void> {
         setBody(value);
-        //implement savetoapi
+        let x = await updateNode(node_id, {body: value});
     }
 
     return (
@@ -40,10 +46,9 @@ const NodeComp: React.FC<NodeProps> = ({ node, child_depth, todo_id }) => {
                         <Col>
                             <input
                                 type="text"
-                                value={node.body}
-                                onChange={(e) => handleEditBody(e.target.value, node.node_id)}
+                                value={body}
+                                onChange={(e) => setText(e.target.value)}
                                 style={{ border: "1px", width: "100%", textIndent: "32px" }}
-                                className="text-center"
                             />
 
                         </Col>
