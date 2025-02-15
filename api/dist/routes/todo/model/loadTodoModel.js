@@ -5,7 +5,7 @@ const createServer_1 = require("../../../server/createServer");
 async function loadTodoModel(tableInput, userId) {
     try {
         const queryTable = tableInput == "active" ? "todo_active" : tableInput == "archive" ? "todo_archive" : null;
-        const query = `SELECT todo_id, title FROM todo.${queryTable} WHERE user_id = $1 ORDER BY todo_id`;
+        const query = `SELECT todo_id, title, completed FROM todo.${queryTable} WHERE user_id = $1 ORDER BY todo_id`;
         console.log(query);
         const params = [userId];
         const dbRes = await createServer_1.dbServiceInstance.queryMethod(query, params);

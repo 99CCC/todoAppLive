@@ -6,14 +6,19 @@ import { Button, Col, Container, Modal } from "react-bootstrap";
 interface TodoParentProps {
     inTodoId: number;
     inTodoTitle: string;
+    inTodoCompleted: boolean;
     deleteTodo: Function;
 }
 
-const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle, deleteTodo }) => { 
+const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle, inTodoCompleted, deleteTodo }) => { 
     const [expanded, setExpanded] = useState(false);
     const [children, setChildren] = useState<TodoChild[]>([]);
     const [show, setShow] = useState(false);
     const [title, setTitle] = useState(inTodoTitle);
+    const [localCompleted, setCompleted] = useState<boolean>(inTodoCompleted);
+    const checkBoxUrl = "../../../images/CheckBox.svg";
+    const checkBoxDoneUrl = "../../../images/CheckBoxChecked.svg"
+    const background = inTodoCompleted ? "0 255 0" : "255 255 0";
 
     const handleClose = () => {
         setShow(false);
@@ -51,7 +56,7 @@ const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle, deleteTo
     };
 
     async function handleSave() {
-        await updateTodo(inTodoId, title);
+        await updateTodo({todoId: inTodoId, title: title});
         setShow(false);
     }
 
@@ -78,12 +83,24 @@ const TodoParent: React.FC<TodoParentProps> = ({ inTodoId, inTodoTitle, deleteTo
         await deleteTodo(inTodoId, "active")
     }
 
+    async function handleComplete(e: {stopPropagation: () => void; }){
+        e.stopPropagation();
+        setCompleted(!localCompleted);
+        await updateTodo({todoId: inTodoId, completed: !localCompleted});
+    }
+
     //HANDLESHOW FOR CONTAINER: Figure out structure for only using onclick when not layered
     return (
         <>
             <div>
-                <Container className="d-flex align-items-center p-4 border rounded hoverTodo" onClick={handleShow}>
+                <Container className="d-flex align-items-center p-4 border rounded hoverTodo" onClick={handleShow} style={{backgroundColor: `rgb(${background} / 0.1)`}}>
                     <Container className="fluid d-flex align-items-center"> 
+                    <img src={localCompleted ? checkBoxDoneUrl : checkBoxUrl} 
+                    style={{
+                            width: `3%`, height: `3%`, fill: "none"
+                        }}
+                        onClick={handleComplete} className="hoverButtons"
+                        />
                         <Col>
                             <span>{title}</span>
                         </Col>

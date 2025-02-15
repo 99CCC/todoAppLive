@@ -4,7 +4,8 @@ import { AuthService, authService } from "../../auth/authService";
 
 export interface TodoItem {
     todo_id: number,
-    title: string
+    title: string,
+    completed: boolean
 }
 
 export interface TodoChild {
@@ -38,14 +39,12 @@ export async function loadTodo(){
     }
 }
 
-export async function updateTodo(todoId: number, title: string, depth?: number[]){
+export async function updateTodo(params:{ todoId: number, title?: string, depth?: number[], completed?: boolean}){
     try {
+        console.log("params: ", params);
         const token = authService.getToken();
         const url = process.env.REACT_APP_UPDATE_TODO_URL;
-        let body: any = {todoId, title};
-        depth !== undefined && (body['depth'] = depth);
-
-        const res = await axios.put(url!, body, {headers: {Authorization: "Bearer "+token}});
+        const res = await axios.put(url!, params, {headers: {Authorization: "Bearer "+token}});
         return res.status; 
     } catch (error) {
         console.error(error);
@@ -113,6 +112,7 @@ export async function deleteTodo(todoId: number, table: string, depth?: number[]
     }
 }
 
+
 export async function createNode(depth: number[], todoId: number){
     try {
         const token = authService.getToken();
@@ -137,7 +137,6 @@ export async function loadNode(depth: number[], todoId: number){
         const url = process.env.REACT_APP_LOAD_NODE_URL;
         const body = {depth, todoId};
         console.log("loadNode Url: ", url);
-
         const res = await axios.post(url!, body, {headers: {Authorization: "Bearer "+token}});
         return res.data.dbRes;
     } catch (error) {
@@ -153,6 +152,19 @@ export async function updateNode(nodeId: number, params: { body?: string, comple
         let url = process.env.REACT_APP_UPDATE_NODE;
         url += "/"+nodeId;
         const res = await axios.put(url!, params, {headers: {Authorization: "Bearer "+token}});
+        return res.status;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+}
+
+export async function deleteNode(nodeId: number){
+    try {
+        const token = authService.getToken();
+        let url = process.env.REACT_APP_DELETE_NODE;
+        url += "/"+nodeId;
+        const res = await axios.delete(url!, {headers: {Authorization: "Bearer "+token}});
         return res.status;
     } catch (error) {
         console.error(error);

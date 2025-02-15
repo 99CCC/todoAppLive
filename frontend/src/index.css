@@ -41,3 +41,8 @@ body {
 .arrow{
   transform: rotate(0.5turn);
 }
+
+.dark-theme {
+  color: #eaeaeaea;
+  background-color: #1d1d1d; 
+}

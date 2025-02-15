@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { loadTodoChild, updateTodo, TodoChild, Node, createTodo, deleteTodo as apiDeleteTodo, createNode, loadNode } from "../ApiController";
-import { Button, Col, ListGroup, Modal, Row } from "react-bootstrap";
+import { loadTodoChild, updateTodo, TodoChild, Node, createTodo, deleteTodo as apiDeleteTodo, createNode, loadNode, deleteNode as apiDeleteNode } from "../ApiController";
+import { Button, Col, Modal} from "react-bootstrap";
 import NodeComp from "./Node";
 
 interface TodoChildProps {
@@ -28,6 +28,11 @@ const TodoChildComp: React.FC<TodoChildProps> = ({
     const [localTitle, setTitle] = useState(child_title);
     const [localBody, setBody] = useState<string>();
     const [localNode, setNode] = useState<Node[]>(node);
+    const [localCompleted, setCompleted] = useState<boolean>(child_completed);
+    const checkBoxUrl = "../../../images/CheckBox.svg";
+    const checkBoxDoneUrl = "../../../images/CheckBoxChecked.svg"
+    const background = localCompleted ? "0 255 0" : "255 255 0";
+
 
     const handleClose = () => {
         setShow(false);
@@ -66,7 +71,7 @@ const TodoChildComp: React.FC<TodoChildProps> = ({
 
     async function handleSave() {
         try {
-            await updateTodo(todo_id, localTitle, child_depth);
+            await updateTodo({todoId: todo_id, title: localTitle, depth: child_depth});
             updateChildTitle(child_depth, localTitle);
             setNode(await loadNode(child_depth, todo_id));
             setShow(false);
@@ -111,12 +116,36 @@ const TodoChildComp: React.FC<TodoChildProps> = ({
         return;
     };
 
+    async function deleteNode (nodeId: number){
+        try {
+            const apiRes = await apiDeleteNode(nodeId);
+            console.log(apiRes);
+            setNode(await loadNode(child_depth, todo_id));
+        }catch(error){
+            console.error();
+        }
+    };
+
+    async function handleComplete (e: { stopPropagation: () => void; }){
+        e.stopPropagation();
+        try {
+            const apiRes = await updateTodo({todoId: todo_id, depth: child_depth, completed: !localCompleted});
+            console.log(apiRes);
+            setCompleted(!localCompleted);
+        } catch (error) {
+            console.error();
+        }
+    }
 
     return (
         <>
-            <div className="mb-2" style={{ marginLeft: `${child_depth.length * 20}px` }}>
+            <div className="mb-2" style={{ marginLeft: `${child_depth.length * 20}px`}}>
+                
+                <div className="d-flex align-items-center p-2 border rounded hoverTodo" onClick={handleShow} style={{backgroundColor: `rgb(${background} / 0.1)`}}>
 
-                <div className="d-flex align-items-center p-2 border rounded hoverTodo" onClick={handleShow}>
+                <img src={localCompleted ? checkBoxDoneUrl : checkBoxUrl}
+                        style={{ width: `3%`, height: `3%`, fill: "none" }}
+                        onClick={handleComplete} className="hoverButtons" />
                     <Col>
                         <span>{localTitle}</span>
                     </Col>
@@ -176,8 +205,14 @@ const TodoChildComp: React.FC<TodoChildProps> = ({
                 <Modal.Body>
                     <div className="text-center mb-4">
                     <Button variant="outline-dark" onClick={handleCreateNode} style={{marginBottom: `1%`}}>New Node</Button>
-                    {localNode.map((node) => (
-                        <NodeComp key={node.node_id} node={node} child_depth={child_depth} todo_id={todo_id}/>
+                    {localNode.length > 0 && localNode.map((node) => (
+                        <NodeComp 
+                        key={node.node_id} 
+                        node={node} 
+                        child_depth={child_depth} 
+                        todo_id={todo_id} 
+                        delete_node={deleteNode}
+                        />
                     ))}
                     </div>
                 </Modal.Body>

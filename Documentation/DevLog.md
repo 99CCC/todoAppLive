@@ -1,12 +1,22 @@
+## 15.02.2025
+-Debug childrens title 	-OK
+-Make nodes writable 	-OK
+-Make node completable  -OK
+-Make node deletable    -OK
+-Make parent completable    
+-Make child completable -OK
+	-Done
+Future possible tasks:
+    -Track x/y completed childs and nodes
+
 ## 06.02.2025 23:30
 -Debug childrens title 	-OK
 -Make nodes writable 	-OK
--Make node completable
+-Make node completable  
 -Make node deletable
 -Make parnent completable
 -Make child completable
 	-Done
-
 
 ## 05.02.2025 22:44
 Added node, next: add functions up to parents for crud
